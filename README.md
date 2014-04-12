@@ -16,8 +16,7 @@ is adding a large number of analytics other book readers did not offer (or at le
 This reader only took ~20 hours to complete at this point and I am sure you can tell, please feel free to offer suggestions or make pull requests, etc. The reason I am making this open source is the hope that someone can use it, if 
 they ever stumble upon my github that is.
 
-If anyone does end up using it, I would appreciate some credit. Though it is obviously not required because I 
-offer this without any license.
+If anyone does end up using it, I would hope you contribute to the project, or at least let me know what you use it for! It's nice to know when a project is being put to use.
 
 <h2>Directions:</h2>
 
