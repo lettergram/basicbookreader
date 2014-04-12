@@ -70,7 +70,7 @@ offer this without any license.
     
     
 <h2>Liscense</h2>
-<h3>The MIT License (MIT)</h3>
+<b>The MIT License (MIT)</b>
 
 Copyright (c) 2014 Austin G. Walters
 
