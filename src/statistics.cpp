@@ -4,6 +4,8 @@
 static int MAXREAD = 12;
 
 /**
+ * Constructor for the statistics class
+ * 
  * @brief statistics::statistics - Constructor for the statistics object
  * @param book - Qstring title for the book
  * @param location - QString location the stats file will be stored
@@ -31,6 +33,8 @@ statistics::statistics(QString book, int numberOfPages){
 }
 
 /**
+ * Deconstructor for the statistics class
+ * 
  * @brief statistics::~statistics - deconstructor for statistics class,
  * saves out to file first, before deconstructing.
  */
