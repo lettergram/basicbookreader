@@ -11,14 +11,14 @@ library::library(QString loc){
 /**
  * Public Function of the library class
  *
- * @brief library::load_database - loads the data from /books/library.txt
+ * @brief library::load_database - loads the data from /books/library.db
  * @param lib_loc - the library location, it will search all parent directories
  */
 void library::load_database(QString lib_loc){
 
-    QFile file(lib_loc + QString("library.txt"));
+    QFile file(lib_loc + QString("library.db"));
 
-    if(!file.open(QIODevice::ReadOnly))
+    if(!file.open(QIODevice::ReadWrite))
         QMessageBox::information(0, "Error", file.errorString());
 
     QTextStream database(&file);
@@ -80,12 +80,12 @@ void library::loadbook(int index, current_book * book){
  * Public Function of the library class
  *
  * @brief library::save_bookinfo_to_database - Saves the current book data to
- *          books/library.txt, which will be loaded on startup.
- * @param lib_loc - the locaiton of library.txt in the file system
+ *          books/library.db, which will be loaded on startup.
+ * @param lib_loc - the locaiton of library.db in the file system
  */
 void library::save_bookinfo_to_database(QString lib_loc){
 
-    QFile file(lib_loc + QString("library.txt"));
+    QFile file(lib_loc + QString("library.db"));
 
     if(!file.open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text))
         QMessageBox::information(0, "Error", file.errorString());
@@ -111,6 +111,9 @@ void library::save_bookinfo_to_database(QString lib_loc){
  * @param book - The book which needs an index
  */
 void library::index_book(current_book* book){
+
+    QMessageBox::information(0, "Indexing"
+             , "We need to index your book,\nbecause it is new to the library!\n(this may take up to 20 seconds)");
 
     book->page.push_back(0);
     while(!book->stream->atEnd()){

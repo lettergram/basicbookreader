@@ -21,6 +21,8 @@ public:
     ~statistics();
     void startPage(int pagenum);
     void endPage(int pagenum);
+    void disableStats();
+    void enableStats();
 
 private:
 
@@ -32,6 +34,8 @@ private:
 
     std::vector< std::vector<double> > pageTimes;
     int index;
+
+    bool disable_flag;
 
 /*=== Private Statistics Functions ===*/
 

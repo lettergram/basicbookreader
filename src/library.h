@@ -8,6 +8,7 @@
 #include <QList>
 #include <QStringList>
 #include <QDir>
+ #include <QProgressDialog>
 
 typedef struct _current_book{
 

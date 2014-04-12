@@ -33,8 +33,8 @@ MainWindow::MainWindow(QWidget *parent) :
         book = new current_book();
 
         QTextStream(stdout) << *lib_loc << endl;
+
         book->file_location = new QString(*lib_loc);
-        book->title = new QString("The-Adventures-of-Tom-Sawyer.txt");
 }
 
 /**
@@ -44,35 +44,16 @@ MainWindow::MainWindow(QWidget *parent) :
  * Deletes all excess data
  */
 MainWindow::~MainWindow(){
-    stats->endPage(*book->pagenum);
+
+    if(stats != NULL){
+        stats->endPage(*book->pagenum);
+        delete stats;
+    }
+
     lib->save_bookinfo_to_database(*lib_loc);
-    delete stats;
+
     delete book;
     delete ui;
-}
-
-/**
- * Public Function of the MainWindow class
- *
- * @brief MainWindow::on_addtoLibButton_clicked - Adds a new book to the library,
- * loads the first page.
- */
-void MainWindow::on_addtoLibButton_clicked(){
-
-    lib->init_book(book);
-    if(stats != NULL){ delete stats; }
-    stats = new statistics(*book->title, book->page.count());
-    loadpage();
-}
-
-/* Loads the string in the file_location field into the book->file_location */
-void MainWindow::on_file_location_textEdited(const QString &arg1){
-    book->file_location = new QString(arg1);
-}
-
-/* Loads the string in the book_name field into the book->title */
-void MainWindow::on_book_name_textEdited(const QString &arg1){
-    book->title = new QString(arg1);
 }
 
 /**
@@ -120,18 +101,6 @@ void MainWindow::on_saveBookButton_clicked(){
 /**
  * Public Function of the MainWindow class
  *
- * @brief MainWindow::on_loadBookButton_clicked - loads the book from the library into the display
- */
-void MainWindow::on_loadBookButton_clicked(){
-
-    if(book->title == NULL){ return; }
-
-    loadNewBook();
-}
-
-/**
- * Public Function of the MainWindow class
- *
  * @brief MainWindow::on_lineEdit_page_textEdited - changes the book to that particular page
  * @param arg1 - the text entered converted to page number and loads
  */
@@ -139,10 +108,8 @@ void MainWindow::on_lineEdit_page_textEdited(const QString &arg1){
 
     if(book->stream == NULL){ return; }
 
-    if(arg1.toInt() > book->page.count()){
-        QString err("Pages out of bounds");
-        QMessageBox::information(0, "Error", err);
-    }
+    if(arg1.toInt() > book->page.count())
+        QMessageBox::information(0, "Error", "Pages out of bounds");
 
     stats->endPage(*book->pagenum);
     *book->pagenum = arg1.toInt();
@@ -169,6 +136,36 @@ void MainWindow::on_toolButton_clicked(){
 
     loadNewBook();
 }
+
+/**
+ * Public Function of the MainWindow class
+ *
+ * @brief MainWindow::on_disable_stats_button_clicked - disables statistics
+ *
+ * ==================== WARNING =======================
+ * They must disable it every time they load the book
+ * or statistics will be kept. The assumption being
+ * some people will click it and forget.
+ *
+ */
+void MainWindow::on_disable_stats_button_clicked(){
+    if(stats == NULL){ return; }
+    QMessageBox::information(0, "Statistics", "Statistics Disabled");
+    stats->disableStats();
+}
+
+/**
+ * Public Function of the MainWindow class
+ *
+ * @brief MainWindow::on_enable_stats_button_clicked - enables statistics
+ *              (this is default).
+ */
+void MainWindow::on_enable_stats_button_clicked(){
+    if(stats == NULL){ return; }
+    QMessageBox::information(0, "Statistics", "Statistics Enabled");
+    stats->enableStats();
+}
+
 
 /**
  * Private Function of the MainWindow class
@@ -204,8 +201,8 @@ void MainWindow::loadpage(){
  */
 void MainWindow::loadNewBook(){
     if(stats != NULL){ delete stats; }
-
     lib->closeBook(book);
+
     for(int i = 0; i < lib->books.count(); i++){
         if(book->title->compare(lib->books[i].title, Qt::CaseInsensitive) == 0){
             lib->loadbook(i, book);
@@ -214,5 +211,10 @@ void MainWindow::loadNewBook(){
             return;
         }
     }
-}
 
+    /* If no book can be found in library, create a new entry! */
+    lib->init_book(book);
+    stats = new statistics(*book->title, book->page.count());
+    loadpage();
+
+}

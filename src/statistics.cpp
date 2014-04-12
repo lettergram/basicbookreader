@@ -12,6 +12,8 @@ static int MAXREAD = 12;
  */
 statistics::statistics(QString book, int numberOfPages){
 
+    disable_flag = false;
+
     QDir dir;
     int i = 0;
     while(!dir.cd("stats")){
@@ -39,6 +41,7 @@ statistics::statistics(QString book, int numberOfPages){
  * saves out to file first, before deconstructing.
  */
 statistics::~statistics(){
+    if(disable_flag){ return; }
     generateStatsDocument();
 }
 
@@ -50,6 +53,8 @@ statistics::~statistics(){
  * @return index - the locaiton in the row
  */
 void statistics::startPage(int pagenum){
+
+    if(disable_flag){ return; }
 
     clock_t t;
     t = clock();
@@ -74,6 +79,8 @@ void statistics::startPage(int pagenum){
  */
 void statistics::endPage(int pagenum){
 
+    if(disable_flag){ return; }
+
     clock_t t;
     t = clock();
 
@@ -89,12 +96,33 @@ void statistics::endPage(int pagenum){
 }
 
 /**
+ * Public Function for the statistics class
+ *
+ * @brief statistics::disableStats - disables all statistics functions
+ */
+void statistics::disableStats(){
+    this->disable_flag = true;
+}
+
+/**
+ * Public Function for the statistics class
+ *
+ * @brief statistics::dEnableStats - Enables all statistics functions (default)
+ */
+void statistics::enableStats(){
+     this->disable_flag = false;
+}
+
+
+/**
  * Private Function
  *
  * @brief generateStatsDocument - This function will generate a statistics
  * document for a given book.
  */
 void statistics::generateStatsDocument(){
+
+    if(disable_flag){ return; }
 
     QFile file(*this->file_loc);
     QTextStream stream(&file);
@@ -128,6 +156,8 @@ void statistics::generateStatsDocument(){
  */
 void statistics::loadStatsDocument(){
 
+    if(disable_flag){ return; }
+
     if(this->file_loc == NULL){ return; }
 
     QFile file(*this->file_loc);
@@ -137,7 +167,7 @@ void statistics::loadStatsDocument(){
 
     QTextStream stream(&file);
 
-    for(int page = 0; !this->pageTimes.size(); page++){
+    for(int page = 0; !stream.atEnd(); page++){
 
         QString pagestat = stream.readLine();
 
