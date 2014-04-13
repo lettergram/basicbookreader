@@ -29,7 +29,10 @@ private:
 /*=== Private Statistics Variables ===*/
 
     QString * file_loc;
+    QString * date_loc;
+    QString * logFile;
 
+    int * pageVists;
     int bookSize;
 
     std::vector< std::vector<double> > pageTimes;
@@ -41,6 +44,8 @@ private:
 
     void loadStatsDocument();
     void generateStatsDocument();
+    void openJournal();
+    void closeJournal();
 
 };
 

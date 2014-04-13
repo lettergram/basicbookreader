@@ -21,7 +21,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow){
         ui->setupUi(this);
 
-        QDir dir;
+        QDir dir(QApplication::applicationDirPath());
+
         int i = 0;
         while(!dir.cd("books")){
             dir.cdUp();
@@ -31,8 +32,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
         lib = new library(*lib_loc);
         book = new current_book();
-
-        QTextStream(stdout) << *lib_loc << endl;
 
         book->file_location = new QString(*lib_loc);
 }

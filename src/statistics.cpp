@@ -20,9 +20,11 @@ statistics::statistics(QString book, int numberOfPages){
         dir.cdUp();
         if(i++ == 7){ break; }
     }
+
     QString location(dir.absolutePath() + "/");
 
     this->file_loc = new QString(location + book + QString(".stat"));
+    this->date_loc = new QString(location + QString("journal.log"));
 
     this->bookSize = numberOfPages;
     this->pageTimes.resize(numberOfPages);
@@ -30,8 +32,8 @@ statistics::statistics(QString book, int numberOfPages){
     for(int i = 0; i < numberOfPages; i++)
         this->pageTimes[i].resize(MAXREAD, 0);
 
+    openJournal();
     loadStatsDocument();
-
 }
 
 /**
@@ -43,6 +45,7 @@ statistics::statistics(QString book, int numberOfPages){
 statistics::~statistics(){
     if(disable_flag){ return; }
     generateStatsDocument();
+    closeJournal();
 }
 
 /**
@@ -58,7 +61,7 @@ void statistics::startPage(int pagenum){
 
     clock_t t;
     t = clock();
-
+    (*this->pageVists)++;
     for(int i = 0; i < MAXREAD; i++){
         if(this->pageTimes[pagenum][i] == 0){
             this->pageTimes[pagenum][i] = t;
@@ -70,6 +73,7 @@ void statistics::startPage(int pagenum){
     srand(time(NULL));
     this->index = rand() % MAXREAD;
     this->pageTimes[pagenum][this->index] = t;
+
 }
 
 /**
@@ -115,7 +119,7 @@ void statistics::enableStats(){
 
 
 /**
- * Private Function
+ * Private Function of the statistics class
  *
  * @brief generateStatsDocument - This function will generate a statistics
  * document for a given book.
@@ -147,7 +151,7 @@ void statistics::generateStatsDocument(){
 }
 
 /**
- * Private Function
+ * Private Function of the statistics class
  *
  * @brief statistics::loadStatsDocument - this function will load a
  * statistics document for the book the statistics object is being used for.
@@ -166,10 +170,11 @@ void statistics::loadStatsDocument(){
         QMessageBox::information(0, "Error", "Loading new Stats file");
 
     QTextStream stream(&file);
+    QString pagestat;
 
     for(int page = 0; !stream.atEnd(); page++){
 
-        QString pagestat = stream.readLine();
+        pagestat = stream.readLine();
 
         QStringList list = pagestat.split(",", QString::SkipEmptyParts);
 
@@ -178,3 +183,57 @@ void statistics::loadStatsDocument(){
     }
     file.close();
 }
+
+/**
+ * Private Function of the statistics class
+ *
+ * @brief statistics::openJournal - This function will
+ * save the begining time that a book has been opened, as well as
+ * initialize the pageVisits variable.
+ */
+void statistics::openJournal(){
+
+    if(disable_flag){ return; }
+
+    if(this->date_loc == NULL){ return; }
+
+    QFile file(*this->date_loc);
+
+    QStringList list = (*this->file_loc).split("/", QString::SkipEmptyParts);
+    QStringList title = list[list.count() - 1].split(".", QString::SkipEmptyParts);
+
+    time_t current_time = time(NULL);
+    this->logFile = new QString(title[0] + ", " + QString(ctime(&current_time)).remove(24, 1) + ", ");
+    this->pageVists = new int(0);
+}
+
+/**
+ * Private Function of the statistics class
+ *
+ * @brief statistics::closeJournal - This function will save to file
+ * the "Title, begin time, end time, pagevists" to the jounral.log file
+ *
+ * WARNING - this function requires location of the stats folder + filename FIRST
+ */
+void statistics::closeJournal(){
+
+    if(disable_flag){ return; }
+
+    if(this->date_loc == NULL){ return; }
+
+    QFile file(*this->date_loc);
+
+    /* open file for appending */
+    if(!file.open(QIODevice::ReadWrite | QIODevice::Append | QIODevice::Text))
+        QMessageBox::information(0, "Error", "Writing in journal");
+
+    QTextStream stream(&file);
+
+    time_t current_time = time(NULL);
+
+    this->logFile = new QString((*this->logFile) + QString(ctime(&current_time)).remove(24, 1) + ", " + QString::number(*this->pageVists));
+    stream << (*this->logFile) << endl;
+    file.close();
+}
+
+
