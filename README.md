@@ -5,7 +5,7 @@ A book reader written in C++ and Qt 5.2 (Qt 4+ should work)
 
 Required: <a href="http://qt-project.org/downloads">Qt 4.+</a> and C++11 
 
-Excellent Book Source: Project Gutenberg - http://www.gutenberg.org/
+Excellent Book Source: <a href="http://www.gutenberg.org/">Project Gutenberg</a> <i>(gutenberg.org)</i>
 
 Platform: Cross-Platform
 
