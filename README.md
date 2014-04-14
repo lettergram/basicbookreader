@@ -3,7 +3,7 @@ BasicBookReader
 
 A book reader written in C++ and Qt 5.2 (Qt 4+ should work)
 
-Required: Qt 4.+ and C++11 
+Required: <a href="http://qt-project.org/downloads">Qt 4.+</a> and C++11 
 
 Excellent Book Source: Project Gutenberg - http://www.gutenberg.org/
 
