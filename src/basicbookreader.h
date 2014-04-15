@@ -1,19 +1,19 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef BASICBOOKREADER_H
+#define BASICBOOKREADER_H
 
 #include <QMainWindow>
 
 namespace Ui {
-class MainWindow;
+class BasicBookReader;
 }
 
-class MainWindow : public QMainWindow
+class BasicBookReader : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+    explicit BasicBookReader(QWidget *parent = 0);
+    ~BasicBookReader();
 
 private slots:
 
@@ -29,11 +29,15 @@ private slots:
 
     void on_enable_stats_button_clicked();
 
+    void on_pushButton_clicked();
+
+    void on_textBrowser_selectionChanged();
+
 private:
-    Ui::MainWindow *ui;
+    Ui::BasicBookReader *ui;
     void loadpage();
     void loadNewBook();
 
 };
 
-#endif // MAINWINDOW_H
+#endif // BASICBOOKREADER_H

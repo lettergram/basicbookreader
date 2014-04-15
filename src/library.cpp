@@ -117,7 +117,7 @@ void library::index_book(current_book* book){
 
     book->page.push_back(0);
     while(!book->stream->atEnd()){
-        for(int i = 0; i < 50; i++){
+        for(int i = 0; i < LINESPERPAGE; i++){
             book->stream->readLine(85);
         }
         book->page.push_back(book->stream->pos());

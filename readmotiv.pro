@@ -13,12 +13,12 @@ TEMPLATE = app
 
 
 SOURCES += src/main.cpp\
-        src/mainwindow.cpp \
+        src/basicbookreader.cpp \
     src/library.cpp \
-    src/statistics.cpp
+    src/statistics.cpp \
 
-HEADERS  += src/mainwindow.h \
+HEADERS  += src/basicbookreader.h \
     src/library.h \
-    src/statistics.h
+    src/statistics.h \
 
-FORMS    += src/mainwindow.ui
+FORMS    += src/basicbookreader.ui
