@@ -10,7 +10,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = readmotiv
 TEMPLATE = app
-
+#CONFIG-=app_bundle
 
 SOURCES += src/main.cpp\
         src/basicbookreader.cpp \

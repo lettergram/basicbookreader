@@ -14,7 +14,7 @@ statistics::statistics(QString book, int numberOfPages){
 
     disable_flag = false;
 
-    QDir dir;
+    QDir dir(QApplication::applicationDirPath());
     int i = 0;
     while(!dir.cd("stats")){
         dir.cdUp();
@@ -23,7 +23,9 @@ statistics::statistics(QString book, int numberOfPages){
 
     QString location(dir.absolutePath() + "/");
 
-    this->file_loc = new QString(location + book + QString(".stat"));
+    QStringList title = book.split(".", QString::SkipEmptyParts);
+
+    this->file_loc = new QString(location + title[0] + QString(".stat"));
     this->date_loc = new QString(location + QString("journal.log"));
 
     this->bookSize = numberOfPages;

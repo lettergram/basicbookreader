@@ -6,6 +6,7 @@
 #include <QString>
 #include <QMessageBox>
 #include <QDir>
+#include <QApplication>
 
 #include <iostream>
 #include <vector>

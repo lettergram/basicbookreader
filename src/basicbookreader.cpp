@@ -14,6 +14,7 @@ QString * lib_loc;
 statistics * stats;
 std::vector< QString > highlight;
 
+
 /**
  *  Constructor of the BasicBookReader class
  *
@@ -32,6 +33,7 @@ BasicBookReader::BasicBookReader(QWidget *parent) :
             dir.cdUp();
             if(i++ == 7){ break; }
         }
+
         lib_loc = new QString(dir.absolutePath() + "/");
 
         lib = new library(*lib_loc);
@@ -237,8 +239,6 @@ void BasicBookReader::on_textBrowser_selectionChanged(){
 
     int y = int(double(pos.y() - 134) / 15.8);
 
-    std::cout << QString::number(y).toStdString() << std::endl;
-
     book->stream->seek(book->page[*book->pagenum]);
 
     if( highlight.size() == 0) { highlight.resize(LINESPERPAGE); }
@@ -272,7 +272,7 @@ void BasicBookReader::on_pushButton_clicked(){
                                          tr("Note"), QLineEdit::Normal,
                                          QDir::home().dirName(), &ok);
 
-    QDir dir;
+    QDir dir(QApplication::applicationDirPath());
     int j = 0;
     while(!dir.cd("notes")){ dir.cdUp(); if(j++ == 7){ break; } }
 
