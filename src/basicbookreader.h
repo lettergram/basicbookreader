@@ -2,6 +2,7 @@
 #define BASICBOOKREADER_H
 
 #include <QMainWindow>
+#include <QKeyEvent>
 
 namespace Ui {
 class BasicBookReader;
@@ -32,6 +33,10 @@ private slots:
     void on_pushButton_clicked();
 
     void on_textBrowser_selectionChanged();
+
+    void on_comboBox_currentIndexChanged(const QString &arg1);
+
+    void keyPressEvent( QKeyEvent *k );
 
 private:
     Ui::BasicBookReader *ui;

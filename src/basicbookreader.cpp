@@ -1,5 +1,5 @@
-#include "BasicBookReader.h"
-#include "ui_BasicBookReader.h"
+#include "basicbookreader.h"
+#include "ui_basicbookreader.h"
 #include "library.h"
 #include "statistics.h"
 #include <iostream>
@@ -13,6 +13,7 @@ library * lib;
 QString * lib_loc;
 statistics * stats;
 std::vector< QString > highlight;
+QString * search;
 
 
 /**
@@ -24,6 +25,9 @@ std::vector< QString > highlight;
 BasicBookReader::BasicBookReader(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::BasicBookReader){
+
+        this->grabKeyboard();
+
         ui->setupUi(this);
 
         QDir dir(QApplication::applicationDirPath());
@@ -40,6 +44,7 @@ BasicBookReader::BasicBookReader(QWidget *parent) :
         book = new current_book();
 
         book->file_location = new QString(*lib_loc);
+        search = new QString("Pages");
 }
 
 /**
@@ -49,6 +54,8 @@ BasicBookReader::BasicBookReader(QWidget *parent) :
  * Deletes all excess data
  */
 BasicBookReader::~BasicBookReader(){
+
+    this->releaseKeyboard();
 
     if(stats != NULL){
         stats->endPage(*book->pagenum);
@@ -116,8 +123,12 @@ void BasicBookReader::on_lineEdit_page_textEdited(const QString &arg1){
     if(arg1.toInt() > book->page.count())
         QMessageBox::information(0, "Error", "Pages out of bounds");
 
-    stats->endPage(*book->pagenum);
     *book->pagenum = arg1.toInt();
+
+    if((*search).compare(QString("Chapters"), Qt::CaseInsensitive) == 0)
+        *book->pagenum = book->chapter[arg1.toInt()];
+
+    stats->endPage(*book->pagenum);
     book->stream->seek(book->page[*book->pagenum]);
     loadpage();
 }
@@ -296,4 +307,16 @@ void BasicBookReader::on_pushButton_clicked(){
     highlight.clear();
 
     file.close();
+}
+
+void BasicBookReader::on_comboBox_currentIndexChanged(const QString &arg1){
+    search = new QString(arg1);
+}
+
+void BasicBookReader::keyPressEvent( QKeyEvent *k ){
+
+    if(k->key() == Qt::Key_Right)
+        on_nextButton_clicked();
+    if(k->key() == Qt::Key_Left)
+        on_prevButton_clicked();
 }

@@ -21,59 +21,66 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="2" column="19">
-     <widget class="QPushButton" name="pushButton">
-      <property name="text">
-       <string>Add Note</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="19">
-     <widget class="QToolButton" name="toolButton">
-      <property name="text">
-       <string>Choose Book</string>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="1">
+    <item row="4" column="3">
      <widget class="QPushButton" name="disable_stats_button">
       <property name="text">
        <string>Disable Statistics</string>
       </property>
      </widget>
     </item>
-    <item row="4" column="14">
-     <widget class="QPushButton" name="nextButton">
-      <property name="text">
-       <string>next</string>
-      </property>
+    <item row="4" column="5" colspan="3">
+     <widget class="QComboBox" name="comboBox">
+      <item>
+       <property name="text">
+        <string>Pages</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Chapters</string>
+       </property>
+      </item>
      </widget>
     </item>
-    <item row="4" column="0">
-     <widget class="QPushButton" name="enable_stats_button">
-      <property name="text">
-       <string>Enable Statistics</string>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="13">
-     <widget class="QPushButton" name="prevButton">
-      <property name="text">
-       <string>Prev</string>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="9" colspan="4">
+    <item row="4" column="9">
      <widget class="QLineEdit" name="lineEdit_page">
       <property name="text">
-       <string>Enter Page Number</string>
+       <string>Search</string>
       </property>
       <property name="maxLength">
        <number>50</number>
       </property>
      </widget>
     </item>
-    <item row="0" column="0" rowspan="4" colspan="15">
+    <item row="2" column="16">
+     <widget class="QPushButton" name="pushButton">
+      <property name="text">
+       <string>Add Note</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="16">
+     <widget class="QToolButton" name="toolButton">
+      <property name="text">
+       <string>Choose Book</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="11">
+     <widget class="QPushButton" name="nextButton">
+      <property name="text">
+       <string>next</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="10">
+     <widget class="QPushButton" name="prevButton">
+      <property name="text">
+       <string>Prev</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0" rowspan="4" colspan="12">
      <widget class="QTextBrowser" name="textBrowser">
       <property name="mouseTracking">
        <bool>true</bool>
@@ -83,17 +90,17 @@
       </property>
      </widget>
     </item>
-    <item row="1" column="19">
+    <item row="1" column="16">
      <widget class="QPushButton" name="saveBookButton">
       <property name="text">
        <string>Bookmark</string>
       </property>
      </widget>
     </item>
-    <item row="4" column="2" colspan="7">
-     <widget class="QLabel" name="label">
+    <item row="4" column="2">
+     <widget class="QPushButton" name="enable_stats_button">
       <property name="text">
-       <string/>
+       <string>Enable Statistics</string>
       </property>
      </widget>
     </item>
@@ -115,9 +122,6 @@
   <tabstop>textBrowser</tabstop>
   <tabstop>saveBookButton</tabstop>
   <tabstop>pushButton</tabstop>
-  <tabstop>enable_stats_button</tabstop>
-  <tabstop>disable_stats_button</tabstop>
-  <tabstop>lineEdit_page</tabstop>
   <tabstop>prevButton</tabstop>
   <tabstop>nextButton</tabstop>
  </tabstops>

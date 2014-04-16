@@ -34,13 +34,15 @@ void library::load_database(QString lib_loc){
 
         b.pagenum = new int(database.readLine().toInt());
 
+        QString chapters = database.readLine();
+        QStringList list = chapters.split(",", QString::SkipEmptyParts);
+        for(int i = 0; i < list.count(); i++)
+            b.chapter.append(list[i].toInt());
+
         QString pages = database.readLine();
-
-        QStringList list = pages.split(",", QString::SkipEmptyParts);
-
-        for(int i = 0; i < list.count(); i++){
+        list = pages.split(",", QString::SkipEmptyParts);
+        for(int i = 0; i < list.count(); i++)
             b.page.append(list[i].toInt());
-        }
 
         this->books.append(b);
     }
@@ -61,6 +63,9 @@ void library::loadbook(int index, current_book * book){
     book->pagenum = this->books[index].pagenum;
     book->title = this->books[index].title;
     book->file_location = this->books[index].file_location;
+
+    for(int i = 0; i < this->books[index].chapter.count(); i++)
+        book->chapter.append(this->books[index].chapter[i]);
 
     for(int i = 0; i < this->books[index].page.count(); i++)
         book->page.append(this->books[index].page[i]);
@@ -97,9 +102,12 @@ void library::save_bookinfo_to_database(QString lib_loc){
         database << *books[i].file_location << "\n";
         database << *books[i].pagenum << "\n";
 
-        for(int j = 0; j < books[i].page.count(); j++){
+        for(int j = 0; j < books[i].chapter.count(); j++)
+            database << QString::number(books[i].chapter.value(j)) << ",";
+        database << "\n";
+
+        for(int j = 0; j < books[i].page.count(); j++)
             database << QString::number(books[i].page.value(j)) << ",";
-        }
         database << "\n";
     }
 }
@@ -116,9 +124,20 @@ void library::index_book(current_book* book){
              , "We need to index your book,\nbecause it is new to the library!\n(this may take up to 20 seconds)");
 
     book->page.push_back(0);
-    while(!book->stream->atEnd()){
+    book->chapter.push_back(0);
+    int tableofcontents = 6;
+    for(int page = 0; !book->stream->atEnd(); page++){
+        tableofcontents--;
         for(int i = 0; i < LINESPERPAGE; i++){
-            book->stream->readLine(85);
+            QString check = book->stream->readLine(85);
+            QStringList words = check.split(" ", QString::SkipEmptyParts);
+            for(int j = 0; j < words.count(); j++){
+                if(tableofcontents > 0){ break; }
+                if(words[j].compare(QString("Chapter"), Qt::CaseInsensitive) == 0){
+                    book->chapter.push_back(page);
+                    tableofcontents = 1;
+                }
+            }
         }
         book->page.push_back(book->stream->pos());
     }
