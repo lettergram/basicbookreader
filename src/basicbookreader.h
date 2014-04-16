@@ -26,8 +26,6 @@ private slots:
 
     void on_toolButton_clicked();
 
-    void on_disable_stats_button_clicked();
-
     void on_enable_stats_button_clicked();
 
     void on_pushButton_clicked();

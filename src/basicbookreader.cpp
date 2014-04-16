@@ -45,6 +45,7 @@ BasicBookReader::BasicBookReader(QWidget *parent) :
 
         book->file_location = new QString(*lib_loc);
         search = new QString("Pages");
+        this->grabKeyboard();
 }
 
 /**
@@ -77,6 +78,7 @@ void BasicBookReader::on_nextButton_clicked(){
     if(book->stream == NULL){ return; }
     stats->endPage(*book->pagenum);
     (*book->pagenum)++;
+    this->grabKeyboard();
     loadpage();
 }
 
@@ -97,7 +99,8 @@ void BasicBookReader::on_prevButton_clicked(){
         book->stream->seek(0);
         (*book->pagenum) = 0;
     }
-    // save stats to file
+
+    this->grabKeyboard();
     loadpage();
 }
 
@@ -123,10 +126,13 @@ void BasicBookReader::on_lineEdit_page_textEdited(const QString &arg1){
     if(arg1.toInt() > book->page.count())
         QMessageBox::information(0, "Error", "Pages out of bounds");
 
-    *book->pagenum = arg1.toInt();
-
-    if((*search).compare(QString("Chapters"), Qt::CaseInsensitive) == 0)
+    if((*search).compare(QString("Chapters"), Qt::CaseInsensitive) == 0){
+        if(arg1.toInt() > book->chapter.count()){ return; }
         *book->pagenum = book->chapter[arg1.toInt()];
+    }else{
+        if(arg1.toInt() > book->page.count() - 1){ return; }
+        *book->pagenum = arg1.toInt();
+    }
 
     stats->endPage(*book->pagenum);
     book->stream->seek(book->page[*book->pagenum]);
@@ -156,30 +162,20 @@ void BasicBookReader::on_toolButton_clicked(){
 /**
  * Public Function of the BasicBookReader class
  *
- * @brief BasicBookReader::on_disable_stats_button_clicked - disables statistics
- *
- * ==================== WARNING =======================
- * They must disable it every time they load the book
- * or statistics will be kept. The assumption being
- * some people will click it and forget.
- *
- */
-void BasicBookReader::on_disable_stats_button_clicked(){
-    if(stats == NULL){ return; }
-    QMessageBox::information(0, "Statistics", "Statistics Disabled");
-    stats->disableStats();
-}
-
-/**
- * Public Function of the BasicBookReader class
- *
  * @brief BasicBookReader::on_enable_stats_button_clicked - enables statistics
  *              (this is default).
  */
 void BasicBookReader::on_enable_stats_button_clicked(){
     if(stats == NULL){ return; }
-    QMessageBox::information(0, "Statistics", "Statistics Enabled");
-    stats->enableStats();
+    if((ui->enable_stats_button->text()).compare(QString("Enable  Statistics"), Qt::CaseInsensitive) == 0){
+        stats->enableStats();
+        QMessageBox::information(0, "Statistics", "Statistics Enabled");
+        ui->enable_stats_button->setText("Disable Statistics");
+    }else{
+        stats->disableStats();
+        QMessageBox::information(0, "Statistics", "Statistics Disabled");
+        ui->enable_stats_button->setText("Enable  Statistics");
+    }
 }
 
 
@@ -203,7 +199,7 @@ void BasicBookReader::loadpage(){
     }
 
     str.append(QString(QString("Page: ") + QString::number(*book->pagenum)
-               + " / " + QString::number(book->page.count()) + '\n').rightJustified(150, ' '));
+               + " / " + QString::number(book->page.count() - 1) + '\n').rightJustified(150, ' '));
 
     const QString * display = &str;
 
@@ -311,6 +307,8 @@ void BasicBookReader::on_pushButton_clicked(){
 
 void BasicBookReader::on_comboBox_currentIndexChanged(const QString &arg1){
     search = new QString(arg1);
+    if((*search).compare(QString("Chapters"), Qt::CaseInsensitive) == 0)
+        QMessageBox::information(0, "Experimental", "This is experimental and may not work");
 }
 
 void BasicBookReader::keyPressEvent( QKeyEvent *k ){
@@ -319,4 +317,22 @@ void BasicBookReader::keyPressEvent( QKeyEvent *k ){
         on_nextButton_clicked();
     if(k->key() == Qt::Key_Left)
         on_prevButton_clicked();
+    if(k->key() == Qt::Key_Backspace)
+        this->releaseKeyboard();
+    if(k->key() == Qt::Key_O)
+        on_toolButton_clicked();
+    if(k->key() == Qt::Key_B)
+        on_saveBookButton_clicked();
+    if(k->key() == Qt::Key_0
+       || k->key() == Qt::Key_1
+       || k->key() == Qt::Key_2
+       || k->key() == Qt::Key_3
+       || k->key() == Qt::Key_4
+       || k->key() == Qt::Key_5
+       || k->key() == Qt::Key_6
+       || k->key() == Qt::Key_7
+       || k->key() == Qt::Key_8
+       || k->key() == Qt::Key_9){
+        this->releaseKeyboard();
+    }
 }

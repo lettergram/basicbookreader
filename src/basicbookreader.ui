@@ -21,37 +21,6 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="4" column="3">
-     <widget class="QPushButton" name="disable_stats_button">
-      <property name="text">
-       <string>Disable Statistics</string>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="5" colspan="3">
-     <widget class="QComboBox" name="comboBox">
-      <item>
-       <property name="text">
-        <string>Pages</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Chapters</string>
-       </property>
-      </item>
-     </widget>
-    </item>
-    <item row="4" column="9">
-     <widget class="QLineEdit" name="lineEdit_page">
-      <property name="text">
-       <string>Search</string>
-      </property>
-      <property name="maxLength">
-       <number>50</number>
-      </property>
-     </widget>
-    </item>
     <item row="2" column="16">
      <widget class="QPushButton" name="pushButton">
       <property name="text">
@@ -97,10 +66,53 @@
       </property>
      </widget>
     </item>
-    <item row="4" column="2">
+    <item row="4" column="9">
+     <widget class="QLineEdit" name="lineEdit_page">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>120</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="autoFillBackground">
+       <bool>false</bool>
+      </property>
+      <property name="text">
+       <string>search</string>
+      </property>
+      <property name="maxLength">
+       <number>20</number>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="8">
+     <widget class="QComboBox" name="comboBox">
+      <item>
+       <property name="text">
+        <string>Pages</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Chapters</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item row="4" column="7">
      <widget class="QPushButton" name="enable_stats_button">
       <property name="text">
-       <string>Enable Statistics</string>
+       <string>Enable  Statistics</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="0" colspan="7">
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>BasicBookReader Beta 0.1</string>
       </property>
      </widget>
     </item>
