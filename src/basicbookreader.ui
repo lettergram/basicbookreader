@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>650</height>
+    <width>750</width>
+    <height>610</height>
    </rect>
   </property>
   <property name="maximumSize">
@@ -19,57 +19,113 @@
   <property name="windowTitle">
    <string>BasicBookReader</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
   <widget class="QWidget" name="centralWidget">
+   <property name="styleSheet">
+    <string notr="true">QWidget
+qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0, 0, 0, 255), stop:1 rgba(255, 255, 255, 255))</string>
+   </property>
    <layout class="QGridLayout" name="gridLayout">
-    <item row="2" column="16">
+    <item row="2" column="19">
      <widget class="QPushButton" name="pushNoteButton">
       <property name="text">
        <string>Add Note</string>
       </property>
      </widget>
     </item>
-    <item row="0" column="16">
+    <item row="0" column="19">
      <widget class="QToolButton" name="toolButton">
       <property name="text">
        <string>Choose Book</string>
       </property>
      </widget>
     </item>
-    <item row="4" column="11">
+    <item row="4" column="14">
      <widget class="QPushButton" name="nextButton">
       <property name="text">
        <string>next</string>
       </property>
      </widget>
     </item>
-    <item row="4" column="10">
-     <widget class="QPushButton" name="prevButton">
-      <property name="text">
-       <string>Prev</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="0" rowspan="4" colspan="12">
+    <item row="0" column="0" rowspan="4" colspan="15">
      <widget class="QTextBrowser" name="textBrowser">
       <property name="mouseTracking">
        <bool>true</bool>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
       </property>
       <property name="textInteractionFlags">
        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
       </property>
      </widget>
     </item>
-    <item row="1" column="16">
+    <item row="1" column="19">
      <widget class="QPushButton" name="saveBookButton">
       <property name="text">
        <string>Bookmark</string>
       </property>
      </widget>
     </item>
-    <item row="4" column="9">
+    <item row="4" column="0" colspan="7">
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>BasicBookReader Beta 0.1</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="7">
+     <widget class="QPushButton" name="enable_stats_button">
+      <property name="maximumSize">
+       <size>
+        <width>140</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>Disable Statistics</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="13">
+     <widget class="QPushButton" name="prevButton">
+      <property name="text">
+       <string>Prev</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="8">
+     <widget class="QComboBox" name="comboBox">
+      <property name="maximumSize">
+       <size>
+        <width>100</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <item>
+       <property name="text">
+        <string>Pages</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Chapters</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item row="4" column="9" colspan="4">
      <widget class="QLineEdit" name="lineEdit_page">
       <property name="enabled">
        <bool>true</bool>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>80</width>
+        <height>0</height>
+       </size>
       </property>
       <property name="maximumSize">
        <size>
@@ -88,45 +144,8 @@
       </property>
      </widget>
     </item>
-    <item row="4" column="8">
-     <widget class="QComboBox" name="comboBox">
-      <item>
-       <property name="text">
-        <string>Pages</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Chapters</string>
-       </property>
-      </item>
-     </widget>
-    </item>
-    <item row="4" column="7">
-     <widget class="QPushButton" name="enable_stats_button">
-      <property name="text">
-       <string>Enable  Statistics</string>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="0" colspan="7">
-     <widget class="QLabel" name="label">
-      <property name="text">
-       <string>BasicBookReader Beta 0.1</string>
-      </property>
-     </widget>
-    </item>
    </layout>
   </widget>
-  <widget class="QToolBar" name="mainToolBar">
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-  </widget>
-  <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
@@ -134,7 +153,6 @@
   <tabstop>textBrowser</tabstop>
   <tabstop>saveBookButton</tabstop>
   <tabstop>pushNoteButton</tabstop>
-  <tabstop>prevButton</tabstop>
   <tabstop>nextButton</tabstop>
  </tabstops>
  <resources/>

@@ -199,7 +199,7 @@ void BasicBookReader::loadpage(){
     }
 
     str.append(QString(QString("Page: ") + QString::number(*book->pagenum)
-               + " / " + QString::number(book->page.count() - 1) + '\n').rightJustified(150, ' '));
+               + " / " + QString::number(book->page.count() - 1) + '\n').rightJustified(135, ' '));
 
     const QString * display = &str;
 
