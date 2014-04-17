@@ -22,7 +22,7 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="2" column="16">
-     <widget class="QPushButton" name="pushButton">
+     <widget class="QPushButton" name="pushNoteButton">
       <property name="text">
        <string>Add Note</string>
       </property>
@@ -133,7 +133,7 @@
   <tabstop>toolButton</tabstop>
   <tabstop>textBrowser</tabstop>
   <tabstop>saveBookButton</tabstop>
-  <tabstop>pushButton</tabstop>
+  <tabstop>pushNoteButton</tabstop>
   <tabstop>prevButton</tabstop>
   <tabstop>nextButton</tabstop>
  </tabstops>

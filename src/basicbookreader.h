@@ -28,7 +28,7 @@ private slots:
 
     void on_enable_stats_button_clicked();
 
-    void on_pushButton_clicked();
+    void on_pushNoteButton_clicked();
 
     void on_textBrowser_selectionChanged();
 

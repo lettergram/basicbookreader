@@ -83,7 +83,7 @@ void BasicBookReader::on_nextButton_clicked(){
 }
 
 /**
- * Public Function of the BasicBookReader class
+ * Public Function of the BasicBookReader
  *
  * @brief BasicBookReader::on_prevButton_clicked - s previous page
  */
@@ -162,7 +162,7 @@ void BasicBookReader::on_toolButton_clicked(){
 /**
  * Public Function of the BasicBookReader class
  *
- * @brief BasicBookReader::on_enable_stats_button_clicked - enables statistics
+ * @brief BasicBookReader::on_enable_stats_button_clicked - enables/disables statistics
  *              (this is default).
  */
 void BasicBookReader::on_enable_stats_button_clicked(){
@@ -258,23 +258,21 @@ void BasicBookReader::on_textBrowser_selectionChanged(){
     }
 
     book->stream->seek(book->page[*book->pagenum]);
-
 }
 
 
 /**
  * Public funcion of BasicBookReader class
  *
- * @brief BasicBookReader::on_pushButton_clicked - adds a highlighted section to the "<bookname>.notes"
+ * @brief BasicBookReader::on_pushNoteButton_clicked - adds a highlighted section to the "<bookname>.notes"
  * The user can then add a specific note.
  */
-void BasicBookReader::on_pushButton_clicked(){
+void BasicBookReader::on_pushNoteButton_clicked(){
 
     if(book == NULL){ return; }
-
+    this->releaseKeyboard();
     bool ok;
     QStringList title = (*book->title).split(".", QString::SkipEmptyParts);
-
     QString note = QInputDialog::getText(this, tr("Highlights and Notes"),
                                          tr("Note"), QLineEdit::Normal,
                                          QDir::home().dirName(), &ok);
@@ -305,12 +303,26 @@ void BasicBookReader::on_pushButton_clicked(){
     file.close();
 }
 
+/**
+ * Public function of the BasicBookReader class
+ *
+ * @brief BasicBookReader::on_comboBox_currentIndexChanged - This combobox is used
+ *      to change what you are using the search bar for
+ * @param arg1 - the item you are searching for
+ */
 void BasicBookReader::on_comboBox_currentIndexChanged(const QString &arg1){
     search = new QString(arg1);
     if((*search).compare(QString("Chapters"), Qt::CaseInsensitive) == 0)
         QMessageBox::information(0, "Experimental", "This is experimental and may not work");
 }
 
+/**
+ * Public function of the BasicBookReader class
+ *
+ * @brief BasicBookReader::keyPressEvent - is called when grabKeyboard()
+ *      is in effect. It will determine which key has been pressed and call that function
+ * @param k - the key pressed.
+ */
 void BasicBookReader::keyPressEvent( QKeyEvent *k ){
 
     if(k->key() == Qt::Key_Right)
