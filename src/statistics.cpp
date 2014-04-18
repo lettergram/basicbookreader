@@ -61,21 +61,17 @@ void statistics::startPage(int pagenum){
 
     if(disable_flag){ return; }
 
-    clock_t t;
-    t = clock();
+    this->start = time(NULL);
     (*this->pageVists)++;
     for(int i = 0; i < MAXREAD; i++){
         if(this->pageTimes[pagenum][i] == 0){
-            this->pageTimes[pagenum][i] = t;
             this->index = i;
             return;
         }
     }
-    // Way to handle when someone reads over MAXREAD times on a page
+
     srand(time(NULL));
     this->index = rand() % MAXREAD;
-    this->pageTimes[pagenum][this->index] = t;
-
 }
 
 /**
@@ -87,18 +83,13 @@ void statistics::endPage(int pagenum){
 
     if(disable_flag){ return; }
 
-    clock_t t;
-    t = clock();
+    double diff = difftime(time(NULL), this->start);
+    std::cout << QString::number(diff).toStdString() << std::endl;
 
-    int diff = t - this->pageTimes[pagenum][this->index];
+    if(diff < 2 ){ return; }
 
-    // clearly they didn't read it if it was less than a second
-    if(diff < 1 || diff < 0){
-        this->pageTimes[pagenum][this->index] = 0;
-        return;
-     }
-
-    this->pageTimes[pagenum][this->index] = (double(diff))/CLOCKS_PER_SEC;
+    this->pageTimes[pagenum][this->index] = diff;
+    std::cout << QString::number(this->pageTimes[pagenum][this->index]).toStdString() << std::endl;
 }
 
 /**
@@ -143,7 +134,6 @@ void statistics::generateStatsDocument(){
         for(int j = 0; j < MAXREAD; j++){
             stream << this->pageTimes[i][j] << ",";
 
-            // Leaving zeros as place holders for page numbers
             if(this->pageTimes[i][j] == 0){ break; }
         }
         stream << endl;

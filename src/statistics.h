@@ -38,6 +38,7 @@ private:
 
     std::vector< std::vector<double> > pageTimes;
     int index;
+    time_t start;
 
     bool disable_flag;
 
