@@ -128,7 +128,7 @@ void BasicBookReader::on_lineEdit_page_textEdited(const QString &arg1){
         QMessageBox::information(0, "Error", "Pages out of bounds");
 
     if((*search).compare(QString("Chapters"), Qt::CaseInsensitive) == 0){
-        if(arg1.toInt() > book->chapter.count()){ return; }
+        if(arg1.toInt() > book->chapter.count() - 1){ return; }
         *book->pagenum = book->chapter[arg1.toInt()];
     }else{
         if(arg1.toInt() > book->page.count() - 1){ return; }
@@ -215,7 +215,10 @@ void BasicBookReader::loadpage(){
  * Closing the previously open book as well as the accompaning statistics
  */
 void BasicBookReader::loadNewBook(){
-    if(stats != NULL){ delete stats; }
+    if(stats != NULL){
+        if(book != NULL){ stats->endPage(*book->pagenum); }
+        delete stats;
+    }
     lib->closeBook(book);
 
     for(int i = 0; i < lib->books.count(); i++){
