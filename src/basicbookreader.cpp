@@ -247,17 +247,19 @@ void BasicBookReader::on_textBrowser_selectionChanged(){
 
     QPoint pos = QCursor::pos();
 
-    int y = int(double(pos.y() - 134) / 15.8);
+    int y = int(double(pos.y() - 130) / 15.8);
+    int x = int(double(pos.x() - 357));             // TODO save between to save particular words
 
     book->stream->seek(book->page[*book->pagenum]);
 
     if( highlight.size() == 0) { highlight.resize(LINESPERPAGE); }
 
     for(int i = 0; i < LINESPERPAGE; i++){
-        if(i == y && highlight[i] == NULL)
-            highlight[i].append(book->stream->readLine(85) + '\n');
-        else
-            book->stream->readLine(85);
+        QString line(book->stream->readLine(85) + '\n');
+        if(i == y && highlight[i] == NULL){
+            highlight[i].append(line);
+            stats->reviewed(*book->pagenum, line, x);
+        }
     }
 
     book->stream->seek(book->page[*book->pagenum]);

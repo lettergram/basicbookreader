@@ -26,6 +26,7 @@ statistics::statistics(QString book, int numberOfPages){
     QStringList title = book.split(".", QString::SkipEmptyParts);
 
     this->file_loc = new QString(location + title[0] + QString(".stat"));
+    this->reviewed_loc = new QString(location + title[0] + QString(".interest"));
     this->date_loc = new QString(location + QString("journal.log"));
 
     this->bookSize = numberOfPages;
@@ -55,7 +56,6 @@ statistics::~statistics(){
  *
  * @brief statistics::startPage
  * @param pagenum - the page that the stats are recording
- * @return index - the locaiton in the row
  */
 void statistics::startPage(int pagenum){
 
@@ -77,19 +77,19 @@ void statistics::startPage(int pagenum){
 /**
  * Public Function
  *
- * @brief statistics::endPage
+ * @brief statistics::endPage - called when a page is about to be closed
+ *      this function will add the page time to the pageTimes array
+ * @param pagenum - the current page, that is about to be closed
  */
 void statistics::endPage(int pagenum){
 
     if(disable_flag){ return; }
 
     double diff = difftime(time(NULL), this->start);
-    std::cout << QString::number(diff).toStdString() << std::endl;
 
     if(diff < 2 ){ return; }
 
     this->pageTimes[pagenum][this->index] = diff;
-    std::cout << QString::number(this->pageTimes[pagenum][this->index]).toStdString() << std::endl;
 }
 
 /**
@@ -215,7 +215,6 @@ void statistics::closeJournal(){
 
     QFile file(*this->date_loc);
 
-    /* open file for appending */
     if(!file.open(QIODevice::ReadWrite | QIODevice::Append | QIODevice::Text))
         QMessageBox::information(0, "Error", "Writing in journal");
 
@@ -229,3 +228,21 @@ void statistics::closeJournal(){
 }
 
 
+void statistics::reviewed(int pagenum, QString line, int x){
+
+    if(disable_flag){ return; }
+
+    if(this->reviewed_loc == NULL){ return; }
+
+    QFile file(*this->reviewed_loc);
+
+    if(!file.open(QIODevice::ReadWrite | QIODevice::Append | QIODevice::Text))
+        QMessageBox::information(0, "Error", "Writing in journal");
+
+    QTextStream stream(&file);
+
+    stream << "Page: " << pagenum << endl;
+    stream << "Position: " << x << endl;
+    stream << "Line: " << line << endl;
+
+}

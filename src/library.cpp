@@ -190,9 +190,6 @@ void library::init_book(current_book * book){
     book->pagenum = new int(0);
     book->stream = new QTextStream(book->file);
 
-    /* Index book pages */
     index_book(book);
-
-    /* Add book to Library */
     books.append(*book);
 }

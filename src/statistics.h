@@ -24,6 +24,7 @@ public:
     void endPage(int pagenum);
     void disableStats();
     void enableStats();
+    void reviewed(int pagenum, QString line, int x);
 
 private:
 
@@ -32,6 +33,7 @@ private:
     QString * file_loc;
     QString * date_loc;
     QString * logFile;
+    QString * reviewed_loc;
 
     int * pageVists;
     int bookSize;
