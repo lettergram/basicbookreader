@@ -28,28 +28,28 @@
 qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0, 0, 0, 255), stop:1 rgba(255, 255, 255, 255))</string>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <item row="2" column="19">
+    <item row="2" column="20">
      <widget class="QPushButton" name="pushNoteButton">
       <property name="text">
        <string>Add Note</string>
       </property>
      </widget>
     </item>
-    <item row="0" column="19">
+    <item row="0" column="20">
      <widget class="QToolButton" name="toolButton">
       <property name="text">
        <string>Choose Book</string>
       </property>
      </widget>
     </item>
-    <item row="4" column="14">
+    <item row="4" column="15">
      <widget class="QPushButton" name="nextButton">
       <property name="text">
        <string>next</string>
       </property>
      </widget>
     </item>
-    <item row="0" column="0" rowspan="4" colspan="15">
+    <item row="0" column="0" rowspan="4" colspan="16">
      <widget class="QTextBrowser" name="textBrowser">
       <property name="mouseTracking">
        <bool>true</bool>
@@ -62,7 +62,7 @@ qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0, 0, 0, 255), s
       </property>
      </widget>
     </item>
-    <item row="1" column="19">
+    <item row="1" column="20">
      <widget class="QPushButton" name="saveBookButton">
       <property name="text">
        <string>Bookmark</string>
@@ -76,27 +76,7 @@ qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0, 0, 0, 255), s
       </property>
      </widget>
     </item>
-    <item row="4" column="7">
-     <widget class="QPushButton" name="enable_stats_button">
-      <property name="maximumSize">
-       <size>
-        <width>140</width>
-        <height>16777215</height>
-       </size>
-      </property>
-      <property name="text">
-       <string>Disable Statistics</string>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="13">
-     <widget class="QPushButton" name="prevButton">
-      <property name="text">
-       <string>Prev</string>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="8">
+    <item row="4" column="9">
      <widget class="QComboBox" name="comboBox">
       <property name="maximumSize">
        <size>
@@ -116,7 +96,7 @@ qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0, 0, 0, 255), s
       </item>
      </widget>
     </item>
-    <item row="4" column="9" colspan="4">
+    <item row="4" column="10" colspan="4">
      <widget class="QLineEdit" name="lineEdit_page">
       <property name="enabled">
        <bool>true</bool>
@@ -141,6 +121,32 @@ qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0, 0, 0, 255), s
       </property>
       <property name="maxLength">
        <number>20</number>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="14">
+     <widget class="QPushButton" name="prevButton">
+      <property name="text">
+       <string>Prev</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="7">
+     <widget class="QPushButton" name="enable_stats_button">
+      <property name="minimumSize">
+       <size>
+        <width>130</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>140</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>Disable Statistics</string>
       </property>
      </widget>
     </item>

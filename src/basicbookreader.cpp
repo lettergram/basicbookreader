@@ -122,6 +122,7 @@ void BasicBookReader::on_saveBookButton_clicked(){
 void BasicBookReader::on_lineEdit_page_textEdited(const QString &arg1){
 
     if(book->stream == NULL){ return; }
+    stats->endPage((*book->pagenum));
 
     if(arg1.toInt() > book->page.count())
         QMessageBox::information(0, "Error", "Pages out of bounds");
@@ -226,7 +227,6 @@ void BasicBookReader::loadNewBook(){
         }
     }
 
-    /* If no book can be found in library, create a new entry! */
     lib->init_book(book);
     stats = new statistics(*book->title, book->page.count());
     loadpage();
@@ -284,7 +284,6 @@ void BasicBookReader::on_pushNoteButton_clicked(){
     QString location(dir.absolutePath() + "/");
     QFile file(QString(location + title[0] + ".notes"));
 
-    /* open file for appending */
     if(!file.open(QIODevice::ReadWrite | QIODevice::Append | QIODevice::Text))
         QMessageBox::information(0, "Error", "Writing in journal");
 
