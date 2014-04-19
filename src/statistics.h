@@ -18,13 +18,15 @@ public:
 
 /*=== Public Statistic Functions ===*/
 
-    statistics(const QString book, int numberOfPages);
+    statistics(const QString book, int numberOfPages, int linesPerPage);
     ~statistics();
     void startPage(int pagenum);
     void endPage(int pagenum);
     void disableStats();
     void enableStats();
-    void reviewed(int pagenum, QString line, int x);
+    void reviewed(int pagenum);
+
+    std::vector< std::vector< int > > xcursor;
 
 private:
 

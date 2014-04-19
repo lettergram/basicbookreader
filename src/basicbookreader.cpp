@@ -224,14 +224,14 @@ void BasicBookReader::loadNewBook(){
     for(int i = 0; i < lib->books.count(); i++){
         if(book->title->compare(lib->books[i].title, Qt::CaseInsensitive) == 0){
             lib->loadbook(i, book);
-            stats = new statistics(*book->title, book->page.count());
+            stats = new statistics(*book->title, book->page.count(), LINESPERPAGE);
             loadpage();
             return;
         }
     }
 
     lib->init_book(book);
-    stats = new statistics(*book->title, book->page.count());
+    stats = new statistics(*book->title, book->page.count(), LINESPERPAGE);
     loadpage();
 
 }
@@ -256,9 +256,9 @@ void BasicBookReader::on_textBrowser_selectionChanged(){
 
     for(int i = 0; i < LINESPERPAGE; i++){
         QString line(book->stream->readLine(85) + '\n');
-        if(i == y && highlight[i] == NULL){
-            highlight[i].append(line);
-            stats->reviewed(*book->pagenum, line, x);
+        if(i == y){
+            stats->xcursor[i].push_back(x);
+            if(highlight[i] == NULL){ highlight[i].append(line); }
         }
     }
 

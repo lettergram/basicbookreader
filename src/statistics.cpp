@@ -10,7 +10,7 @@ static int MAXREAD = 12;
  * @param book - Qstring title for the book
  * @param location - QString location the stats file will be stored
  */
-statistics::statistics(QString book, int numberOfPages){
+statistics::statistics(QString book, int numberOfPages, int linesPerPage){
 
     disable_flag = false;
 
@@ -22,7 +22,6 @@ statistics::statistics(QString book, int numberOfPages){
     }
 
     QString location(dir.absolutePath() + "/");
-
     QStringList title = book.split(".", QString::SkipEmptyParts);
 
     this->file_loc = new QString(location + title[0] + QString(".stat"));
@@ -35,6 +34,7 @@ statistics::statistics(QString book, int numberOfPages){
     for(int i = 0; i < numberOfPages; i++)
         this->pageTimes[i].resize(MAXREAD, 0);
 
+    this->xcursor.resize(linesPerPage);
     openJournal();
     loadStatsDocument();
 }
@@ -84,6 +84,8 @@ void statistics::startPage(int pagenum){
 void statistics::endPage(int pagenum){
 
     if(disable_flag){ return; }
+
+    reviewed(pagenum);
 
     double diff = difftime(time(NULL), this->start);
 
@@ -227,8 +229,19 @@ void statistics::closeJournal(){
     file.close();
 }
 
-
-void statistics::reviewed(int pagenum, QString line, int x){
+/**
+ * Public Function of the statistics class
+ *
+ * @brief statistics::reviewed - If a user highlights a secion
+ *      the page, line#, and every 8th x position will be saved.
+ *      This is called every time the user clicks "next."
+ *
+ *      This is not ideal, however it will provide insight to a given
+ *      word that is "searched" for example
+ *
+ * @param pagenum - the page number that the user is currently on
+ */
+void statistics::reviewed(int pagenum){
 
     if(disable_flag){ return; }
 
@@ -241,8 +254,10 @@ void statistics::reviewed(int pagenum, QString line, int x){
 
     QTextStream stream(&file);
 
-    stream << "Page: " << pagenum << endl;
-    stream << "Position: " << x << endl;
-    stream << "Line: " << line << endl;
-
+    for(unsigned long j = 0; j < this->xcursor.size(); j++){
+        if(this->xcursor[j].size() > 0){ stream << "\n" << pagenum << ", " << j << ", "; }
+        for(unsigned long i = 0; i < this->xcursor[j].size(); i+=8)
+            stream << this->xcursor[j][i] << ", ";
+        this->xcursor[j].clear();
+    }
 }
