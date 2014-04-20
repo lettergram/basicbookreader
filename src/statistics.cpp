@@ -256,7 +256,7 @@ void statistics::reviewed(int pagenum){
 
     for(unsigned long j = 0; j < this->xcursor.size(); j++){
         if(this->xcursor[j].size() > 0){ stream << "\n" << pagenum << ", " << j << ", "; }
-        for(unsigned long i = 0; i < this->xcursor[j].size(); i+=8)
+        for(unsigned long i = 0; i < this->xcursor[j].size(); i += 8)
             stream << this->xcursor[j][i] << ", ";
         this->xcursor[j].clear();
     }

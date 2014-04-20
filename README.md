@@ -15,7 +15,7 @@ Platform: Cross-Platform
 
 I built basicbookreader as a template for other book readers, the goal specifically in mind
 is adding a large number of analytics other book readers did not offer (or at least did not let me control).
-This reader only took ~20 hours to complete at this point and I am sure you can tell, please feel free to offer suggestions or make pull requests, etc. The reason I am making this open source is the hope that someone can use it, if 
+This reader only took ~40 hours to complete at this point and I am sure you can tell, please feel free to offer suggestions or make pull requests, etc. The reason I am making this open source is the hope that someone can use it, if 
 they ever stumble upon my github that is.
 
 If anyone does end up using it, I would hope you contribute to the project, or at least let me know what you use it for! It's nice to know when a project is being put to use.
@@ -68,27 +68,3 @@ If anyone does end up using it, I would hope you contribute to the project, or a
     <li>**Data, data, data**, because I leave the hood open and all of the data is open source, you have access to
       all available data and can build libraries for better analytics. This was and is my intended use.</li>
     </ul> 
-    
-    
-<h2>Liscense</h2>
-<b>The MIT License (MIT)</b>
-
-Copyright (c) 2014 Austin G. Walters
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
