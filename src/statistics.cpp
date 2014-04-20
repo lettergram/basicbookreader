@@ -18,7 +18,7 @@ statistics::statistics(QString book, int numberOfPages, int linesPerPage){
     int i = 0;
     while(!dir.cd("stats")){
         dir.cdUp();
-        if(i++ == 7){ break; }
+        if(i++ == 5){ break; }
     }
 
     this->directory = new QString(dir.absolutePath() + "/");
@@ -86,7 +86,6 @@ void statistics::endPage(int pagenum){
     reviewed(pagenum);
 
     double diff = difftime(time(NULL), this->start);
-
     if(diff < 2 ){ return; }
 
     this->pageTimes[pagenum][this->index] = diff;

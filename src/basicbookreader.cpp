@@ -35,7 +35,7 @@ BasicBookReader::BasicBookReader(QWidget *parent) :
         int i = 0;
         while(!dir.cd("books")){
             dir.cdUp();
-            if(i++ == 7){ break; }
+            if(i++ == 5){ break; }
         }
 
         lib_loc = new QString(dir.absolutePath() + "/");
@@ -314,10 +314,23 @@ void BasicBookReader::on_pushNoteButton_clicked(){
  *      to change what you are using the search bar for
  * @param arg1 - the item you are searching for
  */
-void BasicBookReader::on_comboBox_currentIndexChanged(const QString &arg1){
+void BasicBookReader::on_search_type_currentIndexChanged(const QString &arg1){
     search = new QString(arg1);
     if((*search).compare(QString("Chapters"), Qt::CaseInsensitive) == 0)
         QMessageBox::information(0, "Experimental", "This is experimental and may not work");
+}
+
+/**
+ * Public function of the BasicBookReader class
+ *
+ * @brief BasicBookReader::on_user_rating_currentIndexChanged - This combobox
+ *      is used to select how many stars a user would rate the book
+ * @param index - the number of stars the user would give a book
+ */
+void BasicBookReader::on_user_rating_currentIndexChanged(int index){
+
+    if(book == NULL){ return; }
+    stats->usrsrating(index);
 }
 
 /**
@@ -351,10 +364,4 @@ void BasicBookReader::keyPressEvent( QKeyEvent *k ){
        || k->key() == Qt::Key_9){
         this->releaseKeyboard();
     }
-}
-
-void BasicBookReader::on_comboBox_2_currentIndexChanged(int index){
-
-    if(book == NULL){ return; }
-    stats->usrsrating(index);
 }

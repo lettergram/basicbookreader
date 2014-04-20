@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>772</width>
+    <width>792</width>
     <height>610</height>
    </rect>
   </property>
@@ -83,7 +83,7 @@ qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0, 0, 0, 255), s
      </widget>
     </item>
     <item row="4" column="9">
-     <widget class="QComboBox" name="comboBox">
+     <widget class="QComboBox" name="search_type">
       <property name="maximumSize">
        <size>
         <width>100</width>
@@ -151,7 +151,7 @@ qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0, 0, 0, 255), s
      </widget>
     </item>
     <item row="4" column="19">
-     <widget class="QComboBox" name="comboBox_2">
+     <widget class="QComboBox" name="user_rating">
       <item>
        <property name="text">
         <string>☆☆☆☆☆</string>
