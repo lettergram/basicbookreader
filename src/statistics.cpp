@@ -21,12 +21,10 @@ statistics::statistics(QString book, int numberOfPages, int linesPerPage){
         if(i++ == 7){ break; }
     }
 
-    QString location(dir.absolutePath() + "/");
-    QStringList title = book.split(".", QString::SkipEmptyParts);
+    this->directory = new QString(dir.absolutePath() + "/");
+    QStringList t = book.split(".", QString::SkipEmptyParts);
 
-    this->file_loc = new QString(location + title[0] + QString(".stat"));
-    this->reviewed_loc = new QString(location + title[0] + QString(".interest"));
-    this->date_loc = new QString(location + QString("journal.log"));
+    this->title = QString(t[0]);
 
     this->bookSize = numberOfPages;
     this->pageTimes.resize(numberOfPages);
@@ -123,7 +121,7 @@ void statistics::generateStatsDocument(){
 
     if(disable_flag){ return; }
 
-    QFile file(*this->file_loc);
+    QFile file( QString((*this->directory) + this->title + QString(".stat")));
     QTextStream stream(&file);
 
     if(!file.open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text))
@@ -156,9 +154,9 @@ void statistics::loadStatsDocument(){
 
     if(disable_flag){ return; }
 
-    if(this->file_loc == NULL){ return; }
+    if(this->directory == NULL){ return; }
 
-    QFile file(*this->file_loc);
+    QFile file( QString((*this->directory) + this->title + QString(".stat")));
 
     if(!file.open(QIODevice::ReadOnly))
         QMessageBox::information(0, "Error", "Loading new Stats file");
@@ -189,15 +187,12 @@ void statistics::openJournal(){
 
     if(disable_flag){ return; }
 
-    if(this->date_loc == NULL){ return; }
+    if(this->directory== NULL){ return; }
 
-    QFile file(*this->date_loc);
-
-    QStringList list = (*this->file_loc).split("/", QString::SkipEmptyParts);
-    QStringList title = list[list.count() - 1].split(".", QString::SkipEmptyParts);
+    QFile file(QString(*this->directory + "journal.log"));
 
     time_t current_time = time(NULL);
-    this->logFile = new QString(title[0] + ", " + QString(ctime(&current_time)).remove(24, 1) + ", ");
+    this->logFile = new QString(this->title + ", " + QString(ctime(&current_time)).remove(24, 1) + ", ");
     this->pageVists = new int(0);
 }
 
@@ -213,9 +208,9 @@ void statistics::closeJournal(){
 
     if(disable_flag){ return; }
 
-    if(this->date_loc == NULL){ return; }
+    if(this->directory == NULL){ return; }
 
-    QFile file(*this->date_loc);
+    QFile file(QString(*this->directory + "journal.log"));
 
     if(!file.open(QIODevice::ReadWrite | QIODevice::Append | QIODevice::Text))
         QMessageBox::information(0, "Error", "Writing in journal");
@@ -245,9 +240,9 @@ void statistics::reviewed(int pagenum){
 
     if(disable_flag){ return; }
 
-    if(this->reviewed_loc == NULL){ return; }
+    if(this->directory == NULL){ return; }
 
-    QFile file(*this->reviewed_loc);
+    QFile file(QString(*this->directory + this->title + ".interest"));
 
     if(!file.open(QIODevice::ReadWrite | QIODevice::Append | QIODevice::Text))
         QMessageBox::information(0, "Error", "Writing in journal");
@@ -260,4 +255,29 @@ void statistics::reviewed(int pagenum){
             stream << this->xcursor[j][i] << ", ";
         this->xcursor[j].clear();
     }
+}
+
+/**
+ * Public function of the statistics class
+ *
+ * @brief statistics::usrsrating - Saves the user defined rating,
+ *      saves the time and the number of "stars" as .rating
+ * @param val - the number of stars the user gives the book
+ */
+void statistics::usrsrating(int val){
+
+    if(disable_flag){ return; }
+    if(val == 0){ return; }     // Rating of nothing means nothing
+
+    if(this->directory == NULL){ return; }
+
+    QFile file(QString(*this->directory + this->title + ".rating"));
+
+    if(!file.open(QIODevice::ReadWrite | QIODevice::Append | QIODevice::Text))
+        QMessageBox::information(0, "Error", "Writing in journal");
+
+    QTextStream stream(&file);
+
+    time_t current_time = time(NULL);
+    stream <<QString(ctime(&current_time)).remove(24, 1) << ": " << val << endl;
 }

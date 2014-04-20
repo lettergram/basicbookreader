@@ -352,3 +352,9 @@ void BasicBookReader::keyPressEvent( QKeyEvent *k ){
         this->releaseKeyboard();
     }
 }
+
+void BasicBookReader::on_comboBox_2_currentIndexChanged(int index){
+
+    if(book == NULL){ return; }
+    stats->usrsrating(index);
+}

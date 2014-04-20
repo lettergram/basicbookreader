@@ -36,6 +36,8 @@ private slots:
 
     void keyPressEvent( QKeyEvent *k );
 
+    void on_comboBox_2_currentIndexChanged(int index);
+
 private:
     Ui::BasicBookReader *ui;
     void loadpage();

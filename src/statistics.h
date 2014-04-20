@@ -25,6 +25,7 @@ public:
     void disableStats();
     void enableStats();
     void reviewed(int pagenum);
+    void usrsrating(int val);
 
     std::vector< std::vector< int > > xcursor;
 
@@ -32,10 +33,10 @@ private:
 
 /*=== Private Statistics Variables ===*/
 
-    QString * file_loc;
-    QString * date_loc;
+    QString * directory;
+    QString title;
+
     QString * logFile;
-    QString * reviewed_loc;
 
     int * pageVists;
     int bookSize;
