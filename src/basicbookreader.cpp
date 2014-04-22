@@ -15,7 +15,6 @@ statistics * stats;
 std::vector< QString > highlight;
 QString * search;
 
-
 /**
  *  Constructor of the BasicBookReader class
  *

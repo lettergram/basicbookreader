@@ -11,6 +11,7 @@
 #include <QProgressDialog>
 
 static int LINESPERPAGE = 33;
+static int liblimit = 50;
 
 typedef struct _current_book{
 
@@ -41,6 +42,7 @@ public:
     QList<current_book> books;
 
 private:
+
     void index_book(current_book * book);
 };
 
