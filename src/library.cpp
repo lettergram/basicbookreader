@@ -98,7 +98,6 @@ void library::save_bookinfo_to_database(QString lib_loc){
     QTextStream database(&file);
 
     int start = 0;
-
     if(books.count() == liblimit)
         start = 20;
 

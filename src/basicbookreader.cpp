@@ -75,6 +75,7 @@ BasicBookReader::~BasicBookReader(){
  */
 void BasicBookReader::on_nextButton_clicked(){
     if(book->stream == NULL){ return; }
+    if(*book->pagenum >= book->page.size() - 1){ return; }
     stats->endPage(*book->pagenum);
     (*book->pagenum)++;
     this->grabKeyboard();
