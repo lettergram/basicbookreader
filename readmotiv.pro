@@ -13,15 +13,15 @@ TEMPLATE = app
 #CONFIG-=app_bundle
 
 SOURCES += src/main.cpp\
-        src/bookreader/basicbookreader.cpp \
-    src/bookreader/library.cpp \
-    src/bookreader/statistics.cpp \
-    src/statsviewer/statsviewer.cpp \
+    src/basicbookreader.cpp \
+    src/library.cpp \
+    src/statistics.cpp \
+    src/statsviewer.cpp \
 
-HEADERS  += src/bookreader/basicbookreader.h \
-    src/bookreader/library.h \
-    src/bookreader/statistics.h \
-    src/statsviewer/statsviewer.h \
+HEADERS  += src/basicbookreader.h \
+    src/library.h \
+    src/statistics.h \
+    src/statsviewer.h \
 
-FORMS    += src/bookreader/basicbookreader.ui
-FORMS    += src/statsviewer/statsviewer.ui
+FORMS    += src/basicbookreader.ui
+FORMS    += src/statsviewer.ui

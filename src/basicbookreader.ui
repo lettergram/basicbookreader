@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>806</width>
+    <width>800</width>
     <height>610</height>
    </rect>
   </property>
@@ -23,10 +23,6 @@
    <string notr="true"/>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <property name="styleSheet">
-    <string notr="true">QWidget
-qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(0, 0, 0, 255), stop:1 rgba(255, 255, 255, 255))</string>
-   </property>
    <layout class="QGridLayout" name="gridLayout">
     <item row="5" column="19">
      <widget class="QComboBox" name="user_rating">

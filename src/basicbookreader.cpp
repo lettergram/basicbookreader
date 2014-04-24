@@ -376,5 +376,9 @@ void BasicBookReader::keyPressEvent( QKeyEvent *k ){
 void BasicBookReader::on_viewStats_clicked(){
 
     sv = new statsviewer();
+    QStringList titles;
+    for(int i = 0; i < lib->books.size(); i++)
+        titles.append(*lib->books[i].title);
+    sv->initTitle(titles);
     sv->show();
 }
