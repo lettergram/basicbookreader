@@ -1,6 +1,8 @@
 #ifndef BASICBOOKREADER_H
 #define BASICBOOKREADER_H
 
+#include "statsviewer.h"
+
 #include <QMainWindow>
 #include <QKeyEvent>
 
@@ -38,9 +40,13 @@ private slots:
 
     void keyPressEvent( QKeyEvent *k );
 
+    void on_viewStats_clicked();
 
 private:
+
     Ui::BasicBookReader *ui;
+    statsviewer * sv;
+
     void loadpage();
     void loadNewBook();
 

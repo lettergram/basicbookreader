@@ -365,3 +365,16 @@ void BasicBookReader::keyPressEvent( QKeyEvent *k ){
         this->releaseKeyboard();
     }
 }
+
+
+/**
+ * Public function of the BasicBookReader Class
+ *
+ * @brief BasicBookReader::on_viewStats_clicked - if
+ *      statistics is clicked open the view statistics window
+ */
+void BasicBookReader::on_viewStats_clicked(){
+
+    sv = new statsviewer();
+    sv->show();
+}

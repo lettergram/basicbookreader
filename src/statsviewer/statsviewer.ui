@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>statsviewer</class>
+ <widget class="QWidget" name="statsviewer">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>763</width>
+    <height>617</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>AlphaBKZ Statistics</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="3" column="4">
+    <widget class="QComboBox" name="statsType">
+     <item>
+      <property name="text">
+       <string>Type</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="1" column="4">
+    <widget class="QComboBox" name="user">
+     <item>
+      <property name="text">
+       <string>User</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="4" column="4">
+    <widget class="QPushButton" name="zoomIn">
+     <property name="text">
+      <string>Zoom In</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0" colspan="4">
+    <widget class="QSlider" name="horizontalSlider">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="4">
+    <widget class="QComboBox" name="title">
+     <item>
+      <property name="text">
+       <string>Title</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="1" column="0" rowspan="6" colspan="4">
+    <widget class="QGraphicsView" name="graphicsView"/>
+   </item>
+   <item row="5" column="4">
+    <widget class="QPushButton" name="zoomOut">
+     <property name="text">
+      <string>Zoom Out</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="titleDateLabel">
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>13</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Title | Start Date to End Date</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
