@@ -7,6 +7,7 @@ statsviewer::statsviewer(QWidget *parent) :
 {
     ui->setupUi(this);
     this->dateflag = false;
+    generateLifeLogGraph();
 }
 
 statsviewer::~statsviewer()
@@ -26,12 +27,13 @@ void statsviewer::initTitle(QStringList list){
     ui->titleBox->addItems(list);
 }
 
+
 /**
  * Private function of the statsviewer class
  *
  * @brief statsviewer::logParser - Parses the journal.log file
  *      gathering all the information on the "title"
- * @param title
+ * @param title - the title of the book to be logged
  * @return - Returns the first and last access date
  */
 QString statsviewer::logParser(QString title){
@@ -60,6 +62,7 @@ QString statsviewer::logParser(QString title){
     }
     if(date.size() > 5)
         date.append("  to " + last);
+    file.close();
     return date;
 }
 
@@ -104,6 +107,39 @@ void statsviewer::generateLogGraph(){
     r.setWidth(2);
     scene->addPath( pagepath, r );
     ui->graphicsView->setScene(scene);
+}
+
+void statsviewer::generateLifeLogGraph(){
+
+    QDir dir(QApplication::applicationDirPath());
+    for(int i = 0; !dir.cd("stats") && i < 5; i++){ dir.cdUp(); }
+    QFile file(QString(dir.absolutePath() + "/") + "journal.log");
+    if(!file.open(QIODevice::ReadOnly))
+        QMessageBox::information(0, "Error", file.errorString());
+    QTextStream log(&file);
+
+    QString month("1");
+    QString year("1");
+    QStringList check;
+    QStringList date;
+    int total = 0;
+
+    while(!log.atEnd()){
+        check = log.readLine().split(",", QString::SkipEmptyParts);
+        date = check[2].split(" ", QString::SkipEmptyParts);
+        if(date[1].compare(month) == 0 || month.compare("1") == 0){
+            total += check[3].toInt();
+            month = date[1];
+            year = date[4];
+        }else{
+            this->datesRead.push_back(std::make_pair(QString(month + " " + year), total));
+            total = 0;
+            month = check[1];
+        }
+    }
+    this->datesRead.push_back(std::make_pair(QString(month + " " + year), total));
+    file.close();
+    generateLogGraph();
 }
 
 /**

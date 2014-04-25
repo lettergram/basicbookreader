@@ -29,6 +29,7 @@ public:
 
     ~statsviewer();
 
+    QTextStream openFile();
 private slots:
     void on_titleBox_activated(const QString &arg1);
 
@@ -41,6 +42,7 @@ private:
     bool dateflag;
 
     void generateLogGraph();
+    void generateLifeLogGraph();
     QString logParser(QString title);
 };
 
