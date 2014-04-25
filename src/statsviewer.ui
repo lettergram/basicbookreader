@@ -14,61 +14,14 @@
    <string>AlphaBKZ Statistics</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="3" column="6">
-    <widget class="QComboBox" name="statsTypeBox">
-     <property name="maximumSize">
-      <size>
-       <width>90</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <item>
-      <property name="text">
-       <string>Type</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item row="1" column="6">
-    <widget class="QComboBox" name="userBox">
-     <property name="maximumSize">
-      <size>
-       <width>90</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <item>
-      <property name="text">
-       <string>User</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item row="4" column="6">
-    <widget class="QPushButton" name="zoomIn">
-     <property name="maximumSize">
-      <size>
-       <width>90</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <property name="text">
-      <string>Zoom In</string>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="0" colspan="6">
-    <widget class="QSlider" name="horizontalSlider">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
+   <item row="1" column="0" rowspan="7" colspan="6">
+    <widget class="QGraphicsView" name="graphicsView"/>
    </item>
    <item row="2" column="6">
     <widget class="QComboBox" name="titleBox">
      <property name="maximumSize">
       <size>
-       <width>90</width>
+       <width>95</width>
        <height>16777215</height>
       </size>
      </property>
@@ -79,16 +32,16 @@
      </item>
     </widget>
    </item>
-   <item row="5" column="6">
-    <widget class="QPushButton" name="zoomOut">
+   <item row="4" column="6">
+    <widget class="QPushButton" name="zoomIn">
      <property name="maximumSize">
       <size>
-       <width>90</width>
+       <width>95</width>
        <height>16777215</height>
       </size>
      </property>
      <property name="text">
-      <string>Zoom Out</string>
+      <string>Zoom In</string>
      </property>
     </widget>
    </item>
@@ -105,8 +58,68 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="0" rowspan="6" colspan="6">
-    <widget class="QGraphicsView" name="graphicsView"/>
+   <item row="1" column="6">
+    <widget class="QComboBox" name="userBox">
+     <property name="maximumSize">
+      <size>
+       <width>95</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <item>
+      <property name="text">
+       <string>User</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="8" column="0" colspan="6">
+    <widget class="QSlider" name="horizontalSlider">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="6">
+    <widget class="QComboBox" name="statsTypeBox">
+     <property name="maximumSize">
+      <size>
+       <width>95</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <item>
+      <property name="text">
+       <string>Type</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="5" column="6">
+    <widget class="QPushButton" name="zoomOut">
+     <property name="maximumSize">
+      <size>
+       <width>95</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Zoom Out</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="6">
+    <widget class="QPushButton" name="datesToggle">
+     <property name="maximumSize">
+      <size>
+       <width>95</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>View Dates</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

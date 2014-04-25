@@ -6,6 +6,7 @@ statsviewer::statsviewer(QWidget *parent) :
     ui(new Ui::statsviewer)
 {
     ui->setupUi(this);
+    this->dateflag = false;
 }
 
 statsviewer::~statsviewer()
@@ -54,6 +55,7 @@ QString statsviewer::logParser(QString title){
             if(date.compare("") == 0)
                 date.append(logline[1]);
             last = logline[2];
+            this->datesRead.push_back(std::make_pair(logline[1], logline[3].toInt()));
         }
     }
     if(date.size() > 5)
@@ -62,7 +64,50 @@ QString statsviewer::logParser(QString title){
 }
 
 /**
- * Private Slot of the statsviewr class
+ * Private function of the statsviewer class
+ *
+ * @brief statsviewer::generateLogGraph - Graphs the
+ *      number of pages read and diplays a chart
+ */
+void statsviewer::generateLogGraph(){
+    int width = ui->graphicsView->size().width();
+    int height = ui->graphicsView->size().height();
+    QGraphicsScene * scene = new QGraphicsScene();
+
+    QFont f;
+    f.setPointSize(7);
+    QPixmap p(5, 5);
+    p.fill(Qt::blue);
+
+    // TODO: Add predictive reading chart
+    QPainterPath pagepath(QPointF(-width / 2, height/4));
+    scene->addPixmap(p)->setPos(-width / 2, height/4);
+    scene->addText(QString("Start"), f)->setPos(-width / 2, height/4);
+
+    int hadj = height/4;
+    int wadj = -width/2;
+
+    this->datesRead.size();
+    for(int i = 0; i < this->datesRead.size(); i++){
+        int timestamp = (width/this->datesRead.size()) * i;
+        int pagesRead = this->datesRead[i].second * 2;
+        pagepath.lineTo(QPointF(wadj + timestamp, hadj - pagesRead));
+        if(dateflag){
+            scene->addText(this->datesRead[i].first, f)->setPos(wadj + timestamp, hadj - pagesRead);
+        }else{
+            scene->addText(QString::number(this->datesRead[i].second), f)->setPos(wadj + timestamp, hadj - pagesRead);
+        }
+        (scene->addPixmap(p))->setPos(wadj + timestamp, hadj - pagesRead);
+    }
+
+    QPen r(Qt::red);
+    r.setWidth(2);
+    scene->addPath( pagepath, r );
+    ui->graphicsView->setScene(scene);
+}
+
+/**
+ * Private Slot of the statsviewer class
  *
  * @brief statsviewer::on_titleBox_activated - if the title
  *      of a book is chosen, the book statistics are loaded
@@ -72,10 +117,27 @@ QString statsviewer::logParser(QString title){
  */
 void statsviewer::on_titleBox_activated(const QString &arg1){
 
+    this->datesRead.clear();
+
     QStringList t = arg1.split(".", QString::SkipEmptyParts);
     QString dates = logParser(t[0]);
     QString title = t[0].replace("-", " ", Qt::CaseSensitive);
     const QString s(title + " | " + dates);
     ui->titleDateLabel->setText(s);
+    generateLogGraph();
 }
 
+/**
+ * Privat Slot of the statsviewer class
+ *
+ * @brief statsviewer::on_datesToggle_clicked -
+ */
+void statsviewer::on_datesToggle_clicked(){
+
+    this->dateflag ^= true;
+    generateLogGraph();
+    if(this->dateflag)
+        ui->datesToggle->setText(QString("View Pages"));
+    else
+        ui->datesToggle->setText(QString("View Dates"));
+}

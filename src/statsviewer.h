@@ -3,6 +3,13 @@
 
 #include <QWidget>
 #include <QStringList>
+#include <QGraphicsScene>
+#include <QGraphicsPathItem>
+#include <QPointF>
+
+#include <vector>
+#include <utility>
+
 #include "library.h"
 #include "statistics.h"
 
@@ -25,9 +32,15 @@ public:
 private slots:
     void on_titleBox_activated(const QString &arg1);
 
+    void on_datesToggle_clicked();
 
 private:
+    std::vector< std::pair<QString, int > > datesRead; // Stores time read and number of pages
     Ui::statsviewer *ui;
+
+    bool dateflag;
+
+    void generateLogGraph();
     QString logParser(QString title);
 };
 
