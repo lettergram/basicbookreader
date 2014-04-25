@@ -275,6 +275,7 @@ void BasicBookReader::on_textBrowser_selectionChanged(){
 void BasicBookReader::on_pushNoteButton_clicked(){
 
     if(book == NULL){ return; }
+    if(stats == NULL){ return; }
     this->releaseKeyboard();
     bool ok;
     QStringList title = (*book->title).split(".", QString::SkipEmptyParts);

@@ -109,6 +109,12 @@ void statsviewer::generateLogGraph(){
     ui->graphicsView->setScene(scene);
 }
 
+/**
+ * Private function of the statsviewer class
+ *
+ * @brief statsviewer::generateLifeLogGraph - Generates a graph
+ *      of the total number of pages read for each month.
+ */
 void statsviewer::generateLifeLogGraph(){
 
     QDir dir(QApplication::applicationDirPath());
@@ -122,24 +128,32 @@ void statsviewer::generateLifeLogGraph(){
     QString year("1");
     QStringList check;
     QStringList date;
+    QString label = ("Pages Read By Month | ");
     int total = 0;
 
     while(!log.atEnd()){
         check = log.readLine().split(",", QString::SkipEmptyParts);
-        date = check[2].split(" ", QString::SkipEmptyParts);
-        if(date[1].compare(month) == 0 || month.compare("1") == 0){
-            total += check[3].toInt();
-            month = date[1];
-            year = date[4];
-        }else{
-            this->datesRead.push_back(std::make_pair(QString(month + " " + year), total));
+        date = check[1].split(" ", QString::SkipEmptyParts);
+
+        if(date[1].compare(month) != 0){
+            if(month.compare("1") != 0)
+                this->datesRead.push_back(std::make_pair(QString(month + " " + year), total));
+            else
+                label.append(QString(date[1] + " " + date[4]));
             total = 0;
-            month = check[1];
         }
+        total += check[3].toInt();
+        month = date[1];
+        year = date[4];
     }
     this->datesRead.push_back(std::make_pair(QString(month + " " + year), total));
+
+    label.append(QString("  to  " + month + " " + year));
+    const QString s(label);
+
     file.close();
     generateLogGraph();
+    ui->titleDateLabel->setText(s);
 }
 
 /**
