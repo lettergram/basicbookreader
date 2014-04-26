@@ -7,11 +7,13 @@ statsviewer::statsviewer(QWidget *parent) :
 {
     ui->setupUi(this);
     this->dateflag = false;
+    this->toggleOp1 = QString("View Pages");
+    this->toggleOp2 = QString("View Dates");
     generateLifeLogGraph();
 }
 
-statsviewer::~statsviewer()
-{
+statsviewer::~statsviewer(){
+
     delete ui;
 }
 
@@ -38,12 +40,18 @@ void statsviewer::initTitle(QStringList list){
  */
 QString statsviewer::logParser(QString title){
 
+    // TODO: Try to refactor
     QDir dir(QApplication::applicationDirPath());
     for(int i = 0; !dir.cd("stats") && i < 5; i++){ dir.cdUp(); }
     QFile file(QString(dir.absolutePath() + "/") + "journal.log");
     if(!file.open(QIODevice::ReadOnly))
         QMessageBox::information(0, "Error", file.errorString());
     QTextStream log(&file);
+
+    this->datesRead.clear();
+    this->toggleOp1 = QString("View Pages");
+    this->toggleOp2 = QString("View Dates");
+    on_timesToggle_clicked();
 
     QString check;
     QString date("");
@@ -63,16 +71,54 @@ QString statsviewer::logParser(QString title){
     if(date.size() > 5)
         date.append("  to " + last);
     file.close();
+    ui->statsTypeBox->setCurrentIndex(1);
     return date;
 }
 
 /**
  * Private function of the statsviewer class
  *
- * @brief statsviewer::generateLogGraph - Graphs the
+ * @brief statsviewer::statsParser - Parses .stats file given an input title,
+ *      the input title must be in the form <first word>-<second word>-<etc.>.
+ *      The vector this->datesRead will be filled with the appropriate values
+ * @param title - the title of the .stats to parse
+ */
+void statsviewer::statsParser(QString title){
+    QDir dir(QApplication::applicationDirPath());
+    for(int i = 0; !dir.cd("stats") && i < 5; i++){ dir.cdUp(); }
+    QFile file(QString(dir.absolutePath() + "/") + title + ".stat");
+    if(!file.open(QIODevice::ReadOnly))
+        QMessageBox::information(0, "Error", file.errorString());
+    QTextStream stats(&file);
+
+    this->datesRead.clear();
+
+    this->toggleOp1 = QString("Page Times");
+    this->toggleOp2 = QString("View Pages");
+    on_timesToggle_clicked();
+
+    QStringList times;
+    int total = 0;
+
+    while(!stats.atEnd()){
+        times = (stats.readLine()).split(",", QString::SkipEmptyParts);
+        for(int i = 0; i < times.size(); i++){
+            if(i == 0){ total = times[i].toInt(); }
+            else{ total += times[i].toInt(); }
+        }
+        this->datesRead.push_back( std::make_pair(QString("Page Number: " + QString::number(this->datesRead.size())), total) );
+        total = 0;
+    }
+    ui->statsTypeBox->setCurrentIndex(2);
+}
+
+/**
+ * Private function of the statsviewer class
+ *
+ * @brief statsviewer::generateGraph - Graphs the
  *      number of pages read and diplays a chart
  */
-void statsviewer::generateLogGraph(){
+void statsviewer::generateGraph(){
     int width = ui->graphicsView->size().width();
     int height = ui->graphicsView->size().height();
     QGraphicsScene * scene = new QGraphicsScene();
@@ -91,7 +137,7 @@ void statsviewer::generateLogGraph(){
     int wadj = -width/2;
 
     this->datesRead.size();
-    for(int i = 0; i < this->datesRead.size(); i++){
+    for(int i = 0; i < (int)this->datesRead.size(); i++){
         int timestamp = (width/this->datesRead.size()) * i;
         int pagesRead = this->datesRead[i].second * 2;
         pagepath.lineTo(QPointF(wadj + timestamp, hadj - pagesRead));
@@ -134,7 +180,6 @@ void statsviewer::generateLifeLogGraph(){
     while(!log.atEnd()){
         check = log.readLine().split(",", QString::SkipEmptyParts);
         date = check[1].split(" ", QString::SkipEmptyParts);
-
         if(date[1].compare(month) != 0){
             if(month.compare("1") != 0)
                 this->datesRead.push_back(std::make_pair(QString(month + " " + year), total));
@@ -152,8 +197,9 @@ void statsviewer::generateLifeLogGraph(){
     const QString s(label);
 
     file.close();
-    generateLogGraph();
+    generateGraph();
     ui->titleDateLabel->setText(s);
+    ui->statsTypeBox->setCurrentIndex(0);
 }
 
 /**
@@ -170,24 +216,44 @@ void statsviewer::on_titleBox_activated(const QString &arg1){
     this->datesRead.clear();
 
     QStringList t = arg1.split(".", QString::SkipEmptyParts);
+    this->bookfile = t[0];
+
     QString dates = logParser(t[0]);
     QString title = t[0].replace("-", " ", Qt::CaseSensitive);
     const QString s(title + " | " + dates);
     ui->titleDateLabel->setText(s);
-    generateLogGraph();
+    generateGraph();
 }
 
 /**
- * Privat Slot of the statsviewer class
+ * Private Slot of the statsviewer class
  *
- * @brief statsviewer::on_datesToggle_clicked -
+ * @brief statsviewer::on_datesToggle_clicked -switches between
+ *          view dates and number of pages
  */
-void statsviewer::on_datesToggle_clicked(){
+void statsviewer::on_timesToggle_clicked(){
 
     this->dateflag ^= true;
-    generateLogGraph();
+    generateGraph();
     if(this->dateflag)
-        ui->datesToggle->setText(QString("View Pages"));
+        ui->timesToggle->setText(this->toggleOp1);
     else
-        ui->datesToggle->setText(QString("View Dates"));
+        ui->timesToggle->setText(this->toggleOp2);
+}
+
+/**
+ * Private Slot of the satatsviewer class
+ *
+ * @brief statsviewer::on_statsTypeBox_activated - selects the type
+ *          of statistic to review
+ * @param arg1 - the selection on the combobox
+ */
+void statsviewer::on_statsTypeBox_activated(const QString &arg1){
+
+    if(arg1.compare("Journal", Qt::CaseInsensitive) == 0)
+        logParser(this->bookfile);
+    else if(arg1.compare("Times Per Page", Qt::CaseInsensitive) == 0)
+        statsParser(this->bookfile);
+
+    generateGraph();
 }

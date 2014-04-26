@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
+    <width>813</width>
     <height>610</height>
    </rect>
   </property>
@@ -87,7 +87,7 @@
     <item row="5" column="0" colspan="7">
      <widget class="QLabel" name="label">
       <property name="text">
-       <string>BasicBookReader Beta v0.1</string>
+       <string>BasicBookReader Beta v0.2</string>
       </property>
      </widget>
     </item>

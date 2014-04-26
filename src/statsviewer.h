@@ -33,16 +33,25 @@ public:
 private slots:
     void on_titleBox_activated(const QString &arg1);
 
-    void on_datesToggle_clicked();
+    void on_timesToggle_clicked();
+
+    void on_statsTypeBox_activated(const QString &arg1);
 
 private:
+
     std::vector< std::pair<QString, int > > datesRead; // Stores time read and number of pages
     Ui::statsviewer *ui;
 
     bool dateflag;
+    QString bookfile;
 
-    void generateLogGraph();
+    QString toggleOp1;
+    QString toggleOp2;
+
+    void generateGraph();
     void generateLifeLogGraph();
+
+    void statsParser(QString title);
     QString logParser(QString title);
 };
 
