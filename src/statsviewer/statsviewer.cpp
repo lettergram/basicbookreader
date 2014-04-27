@@ -21,9 +21,6 @@ statsviewer::statsviewer(QWidget *parent) :
     this->toggleOp1 = QString("View Pages");
     this->toggleOp2 = QString("View Dates");
 
-    Graphics_view_zoom* z = new Graphics_view_zoom(ui->graphicsView);
-    z->set_modifiers(Qt::NoModifier);
-
     generateLifeLogGraph();
 }
 
@@ -279,4 +276,12 @@ void statsviewer::on_statsTypeBox_activated(const QString &arg1){
         statsParser(this->bookfile);
 
     generateGraph();
+}
+
+void statsviewer::on_verticalSlider_valueChanged(int value){
+    QMatrix matrix;
+    double zoom = 1 + (double)((double)value / 10.0);
+    std::cout << zoom << std::endl;
+    matrix.scale( zoom, zoom);
+    ui->graphicsView->setMatrix(matrix);
 }

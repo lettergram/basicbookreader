@@ -16,14 +16,12 @@ SOURCES += src/main.cpp\
     src/basicbookreader.cpp \
     src/library.cpp \
     src/statistics.cpp \
-    src/statsviewer.cpp \
-    src/graphics_zoom.cpp
+    src/statsviewer/statsviewer.cpp 
 
 HEADERS  += src/basicbookreader.h \
     src/library.h \
     src/statistics.h \
-    src/statsviewer.h \
-    src/graphics_zoom.h
+    src/statsviewer/statsviewer.h 
 
 FORMS    += src/basicbookreader.ui
-FORMS    += src/statsviewer.ui
+FORMS    += src/statsviewer/statsviewer.ui

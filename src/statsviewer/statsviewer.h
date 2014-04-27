@@ -10,9 +10,8 @@
 #include <vector>
 #include <utility>
 
-#include "library.h"
-#include "statistics.h"
-#include "graphics_zoom.h"
+#include "../library.h"
+#include "../statistics.h"
 
 namespace Ui {
 class statsviewer;
@@ -38,6 +37,8 @@ private slots:
     void on_timesToggle_clicked();
 
     void on_statsTypeBox_activated(const QString &arg1);
+
+    void on_verticalSlider_valueChanged(int value);
 
 private:
 

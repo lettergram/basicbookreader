@@ -1,7 +1,7 @@
 #ifndef BASICBOOKREADER_H
 #define BASICBOOKREADER_H
 
-#include "statsviewer.h"
+#include "statsviewer/statsviewer.h"
 
 #include <QMainWindow>
 #include <QKeyEvent>
