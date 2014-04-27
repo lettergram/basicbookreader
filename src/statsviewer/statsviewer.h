@@ -53,13 +53,15 @@ private:
     QString toggleOp2;
     int stretch;
 
-    QFile * openfile(QString title);
+    void updateAvgVal();
 
     void generateGraph();
     void generateLifeLogGraph();
+    void generateLifeRatings();
 
     void statsParser(QString title);
     QString logParser(QString title);
+    void ratingParser(QString title, bool allTitles);
 };
 
 #endif // STATSVIEWER_H

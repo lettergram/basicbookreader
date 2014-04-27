@@ -18,6 +18,7 @@ statsviewer::statsviewer(QWidget *parent) :
     this->statspath = QString(dir.absolutePath() + "/");
 
     this->dateflag = false;
+    this->bookfile = QString("");
     this->toggleOp1 = QString("View Pages");
     this->toggleOp2 = QString("View Dates");
     this->stretch = 1;
@@ -32,7 +33,6 @@ statsviewer::statsviewer(QWidget *parent) :
  *          statsviewer class
  */
 statsviewer::~statsviewer(){
-
     delete ui;
 }
 
@@ -49,18 +49,31 @@ void statsviewer::initTitle(QStringList list){
 }
 
 /**
- * Private function of the statsviewer class
+ * Private function of the stats viewer class
  *
- * @brief statsviewer::openfile - helper function which
- *          finds stats folder and returns file handle
- * @param title - title of file to open
- * @return pointer to the file it was called to open
+ * @brief statsviewer::updateAvgTime - Updates label avg_1
+ *          which represents the time/page or the pages/visit
  */
-QFile * statsviewer::openfile(QString title){
-    QFile * file = new QFile(this->statspath + title);
-    if(!file->open(QIODevice::ReadOnly))
-        QMessageBox::information(0, "Error", file->errorString());
-    return file;
+void statsviewer::updateAvgVal(){
+
+    if(this->datesRead.size() == 0){ return; }
+    QStringList type = this->toggleOp1.split(" ", QString::SkipEmptyParts); // pages and times
+    QString displayAvg;
+
+    if(type[1].compare("Times", Qt::CaseInsensitive) == 0)
+        displayAvg.append("Avg Time(s) Per Page: ");
+    else
+        displayAvg.append("Avg Pages Visited: ");
+
+    double avg = 0;
+    double size = 0;
+    for(int i = 0; i < (int)this->datesRead.size(); i++){
+        avg += this->datesRead[i].second;
+        if(this->datesRead[i].second > 0){ size++; }
+    }
+
+    displayAvg.append(QString::number(avg / size));
+    ui->avg_1->setText(displayAvg);
 }
 
 /**
@@ -73,8 +86,10 @@ QFile * statsviewer::openfile(QString title){
  */
 QString statsviewer::logParser(QString title){
 
-    QFile * file = openfile("journal.log");
-    QTextStream log( file );
+    QFile file(this->statspath + "journal.log");
+    if(!file.open(QIODevice::ReadOnly))
+        QMessageBox::information(0, "Error", QString("Missing journal.log!"));
+    QTextStream log( &file );
 
     this->datesRead.clear();
     this->toggleOp1 = QString("View Pages");
@@ -98,7 +113,7 @@ QString statsviewer::logParser(QString title){
     }
     if(date.size() > 5)
         date.append("  to " + last);
-    file->close(); delete file;
+    file.close();
     ui->statsTypeBox->setCurrentIndex(1);
     return date;
 }
@@ -112,10 +127,11 @@ QString statsviewer::logParser(QString title){
  * @param title - the title of the .stats to parse
  */
 void statsviewer::statsParser(QString title){
-    QFile * file = openfile(title + ".stat");
-    QTextStream stats( file );
 
-    this->datesRead.clear();
+    QFile file(this->statspath + title + ".stat");
+    if(!file.open(QIODevice::ReadOnly))
+        QMessageBox::information(0, "Error", QString("Missing " + title + ".stat"));
+    QTextStream stats( &file );
 
     this->toggleOp1 = QString("Page Times");
     this->toggleOp2 = QString("View Pages");
@@ -134,7 +150,49 @@ void statsviewer::statsParser(QString title){
         total = 0;
     }
     ui->statsTypeBox->setCurrentIndex(2);
-    file->close(); delete file;
+    file.close();
+}
+
+/**
+ * Private function of the statsviewer class
+ *
+ * @brief statsviewer::ratingParser - parses .rating file
+ * @param title - title of book to be parsed
+ * @param allTitles - true if parsing all titles
+ */
+void statsviewer::ratingParser(QString title, bool allTitles){
+
+    QFile file(this->statspath + title + ".rating");
+    file.open(QIODevice::ReadOnly);
+    QTextStream rating( &file );
+
+    this->toggleOp2 = QString("Rate Dates");
+    this->toggleOp1 = QString("Rate Given");
+    ui->timesToggle->setText(this->toggleOp1); // TODO: small bug here
+
+    std::vector< std::pair<QString, int> > scoreDates;
+
+    QStringList score;
+    while(!rating.atEnd()){
+        score = (rating.readLine()).split(": ", QString::SkipEmptyParts);
+        if(score[1].toInt() > 0 ){
+            this->datesRead.push_back( std::make_pair(score[0], score[1].toInt()) );
+            if(allTitles){ this->datesRead[this->datesRead.size() - 1].first = title + "/" + score[0]; }
+        }
+    }
+    ui->statsTypeBox->setCurrentIndex(3);
+    file.close();
+}
+
+void statsviewer::generateLifeRatings(){
+
+    for(int i = 1; ui->titleBox->currentIndex() != -1; i++){
+        ui->titleBox->setCurrentIndex(i);
+        QStringList title = ui->titleBox->currentText().split(".", QString::SkipEmptyParts);
+        if(title.size() > 0){ ratingParser(title[0], true); }
+    }
+
+    ui->titleBox->setCurrentIndex(0);
 }
 
 /**
@@ -176,8 +234,9 @@ void statsviewer::generateGraph(){
 
     QPen r(Qt::red);
     r.setWidth(2);
-
     scene->addPath( pagepath, r );
+
+    updateAvgVal();
     ui->graphicsView->setScene(scene);
 }
 
@@ -189,14 +248,17 @@ void statsviewer::generateGraph(){
  */
 void statsviewer::generateLifeLogGraph(){
 
-    QFile * file = openfile("journal.log");
-    QTextStream log( file );
+    QFile file(this->statspath + "journal.log");
+    if(!file.open(QIODevice::ReadOnly))
+        QMessageBox::information(0, "Error", QString("Missing journal.log!"));
+    QTextStream log( &file );
 
     QString month("1");
     QString year("1");
     QStringList check;
     QStringList date;
     QString label = ("Pages Read By Month | ");
+
     int total = 0;
 
     while(!log.atEnd()){
@@ -213,12 +275,13 @@ void statsviewer::generateLifeLogGraph(){
         month = date[1];
         year = date[4];
     }
+
     this->datesRead.push_back(std::make_pair(QString(month + " " + year), total));
 
     label.append(QString("  to  " + month + " " + year));
     const QString s(label);
 
-    file->close(); delete file;
+    file.close();
     generateGraph();
     ui->titleDateLabel->setText(s);
     ui->statsTypeBox->setCurrentIndex(0);
@@ -241,6 +304,8 @@ void statsviewer::on_titleBox_activated(const QString &arg1){
     this->bookfile = t[0];
 
     QString dates = logParser(t[0]);
+    on_statsTypeBox_activated("Journal");
+
     QString title = t[0].replace("-", " ", Qt::CaseSensitive);
     const QString s(title + " | " + dates);
     ui->titleDateLabel->setText(s);
@@ -272,12 +337,23 @@ void statsviewer::on_timesToggle_clicked(){
  */
 void statsviewer::on_statsTypeBox_activated(const QString &arg1){
 
+    this->datesRead.clear();
+
+    std::cout << this->bookfile.toStdString() << std::endl;
+
+    if(this->bookfile.compare("") == 0 || this->bookfile.compare("Title", Qt::CaseInsensitive) == 0){
+        if(ui->statsTypeBox->currentText().compare("Overview", Qt::CaseInsensitive) == 0)
+            generateLifeLogGraph();
+        else if(ui->statsTypeBox->currentText().compare("Rating(s)", Qt::CaseInsensitive) == 0)
+            generateLifeRatings();
+    }
+
     if(arg1.compare("Journal", Qt::CaseInsensitive) == 0)
         logParser(this->bookfile);
     else if(arg1.compare("Times Per Page", Qt::CaseInsensitive) == 0)
         statsParser(this->bookfile);
-    else
-        generateLifeLogGraph();
+    else if(arg1.compare("Rating(s)", Qt::CaseInsensitive) == 0)
+        ratingParser(this->bookfile, false);
 
     this->stretch = this->datesRead.size() >> 5 | 1;
     generateGraph();
