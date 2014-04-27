@@ -79,7 +79,7 @@ QString statsviewer::logParser(QString title){
     this->datesRead.clear();
     this->toggleOp1 = QString("View Pages");
     this->toggleOp2 = QString("View Dates");
-    on_timesToggle_clicked();
+    ui->timesToggle->setText(this->toggleOp2);
 
     QString check;
     QString date("");
@@ -98,7 +98,7 @@ QString statsviewer::logParser(QString title){
     }
     if(date.size() > 5)
         date.append("  to " + last);
-    file->close();
+    file->close(); delete file;
     ui->statsTypeBox->setCurrentIndex(1);
     return date;
 }
@@ -113,13 +113,13 @@ QString statsviewer::logParser(QString title){
  */
 void statsviewer::statsParser(QString title){
     QFile * file = openfile(title + ".stat");
-    QTextStream stats(file);
+    QTextStream stats( file );
 
     this->datesRead.clear();
 
     this->toggleOp1 = QString("Page Times");
     this->toggleOp2 = QString("View Pages");
-    on_timesToggle_clicked();
+    ui->timesToggle->setText(this->toggleOp1);
 
     QStringList times;
     int total = 0;
@@ -134,7 +134,7 @@ void statsviewer::statsParser(QString title){
         total = 0;
     }
     ui->statsTypeBox->setCurrentIndex(2);
-    file->close();
+    file->close(); delete file;
 }
 
 /**
@@ -190,7 +190,7 @@ void statsviewer::generateGraph(){
 void statsviewer::generateLifeLogGraph(){
 
     QFile * file = openfile("journal.log");
-    QTextStream log(file);
+    QTextStream log( file );
 
     QString month("1");
     QString year("1");
@@ -218,7 +218,7 @@ void statsviewer::generateLifeLogGraph(){
     label.append(QString("  to  " + month + " " + year));
     const QString s(label);
 
-    file->close();
+    file->close(); delete file;
     generateGraph();
     ui->titleDateLabel->setText(s);
     ui->statsTypeBox->setCurrentIndex(0);
@@ -276,6 +276,8 @@ void statsviewer::on_statsTypeBox_activated(const QString &arg1){
         logParser(this->bookfile);
     else if(arg1.compare("Times Per Page", Qt::CaseInsensitive) == 0)
         statsParser(this->bookfile);
+    else
+        generateLifeLogGraph();
 
     this->stretch = this->datesRead.size() >> 5 | 1;
     generateGraph();
