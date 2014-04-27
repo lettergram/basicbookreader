@@ -21,6 +21,9 @@ statsviewer::statsviewer(QWidget *parent) :
     this->toggleOp1 = QString("View Pages");
     this->toggleOp2 = QString("View Dates");
 
+    Graphics_view_zoom* z = new Graphics_view_zoom(ui->graphicsView);
+    z->set_modifiers(Qt::NoModifier);
+
     generateLifeLogGraph();
 }
 

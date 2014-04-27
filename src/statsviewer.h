@@ -12,6 +12,7 @@
 
 #include "library.h"
 #include "statistics.h"
+#include "graphics_zoom.h"
 
 namespace Ui {
 class statsviewer;
@@ -26,6 +27,7 @@ public:
 
     void initUsers(QStringList);
     void initTitle(QStringList);
+    bool viewportEvent(QEvent *event);
 
     ~statsviewer();
 
