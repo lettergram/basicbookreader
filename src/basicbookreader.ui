@@ -87,7 +87,7 @@
     <item row="5" column="0" colspan="7">
      <widget class="QLabel" name="label">
       <property name="text">
-       <string>BasicBookReader Beta v0.2</string>
+       <string>BasicBookReader Alpha v0.2</string>
       </property>
      </widget>
     </item>
