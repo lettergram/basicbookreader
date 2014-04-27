@@ -1,17 +1,35 @@
 #include "statsviewer.h"
 #include "ui_statsviewer.h"
 
+/**
+ * Public function of the statsviewer class
+ *
+ * @brief statsviewer::statsviewer - constructor for the
+ *          stats viewer class
+ */
 statsviewer::statsviewer(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::statsviewer)
-{
+    ui(new Ui::statsviewer){
+
     ui->setupUi(this);
+
+    QDir dir(QApplication::applicationDirPath());
+    for(int i = 0; !dir.cd("stats") && i < 5; i++){ dir.cdUp(); }
+    this->statspath = QString(dir.absolutePath() + "/");
+
     this->dateflag = false;
     this->toggleOp1 = QString("View Pages");
     this->toggleOp2 = QString("View Dates");
+
     generateLifeLogGraph();
 }
 
+/**
+ * Public function of the statsviewer class
+ *
+ * @brief statsviewer::~statsviewer - Deconstructor for the
+ *          statsviewer class
+ */
 statsviewer::~statsviewer(){
 
     delete ui;
@@ -29,6 +47,20 @@ void statsviewer::initTitle(QStringList list){
     ui->titleBox->addItems(list);
 }
 
+/**
+ * Private function of the statsviewer class
+ *
+ * @brief statsviewer::openfile - helper function which
+ *          finds stats folder and returns file handle
+ * @param title - title of file to open
+ * @return pointer to the file it was called to open
+ */
+QFile * statsviewer::openfile(QString title){
+    QFile * file = new QFile(this->statspath + title);
+    if(!file->open(QIODevice::ReadOnly))
+        QMessageBox::information(0, "Error", file->errorString());
+    return file;
+}
 
 /**
  * Private function of the statsviewer class
@@ -40,13 +72,8 @@ void statsviewer::initTitle(QStringList list){
  */
 QString statsviewer::logParser(QString title){
 
-    // TODO: Try to refactor
-    QDir dir(QApplication::applicationDirPath());
-    for(int i = 0; !dir.cd("stats") && i < 5; i++){ dir.cdUp(); }
-    QFile file(QString(dir.absolutePath() + "/") + "journal.log");
-    if(!file.open(QIODevice::ReadOnly))
-        QMessageBox::information(0, "Error", file.errorString());
-    QTextStream log(&file);
+    QFile * file = openfile("journal.log");
+    QTextStream log( file );
 
     this->datesRead.clear();
     this->toggleOp1 = QString("View Pages");
@@ -70,7 +97,7 @@ QString statsviewer::logParser(QString title){
     }
     if(date.size() > 5)
         date.append("  to " + last);
-    file.close();
+    file->close();
     ui->statsTypeBox->setCurrentIndex(1);
     return date;
 }
@@ -84,12 +111,8 @@ QString statsviewer::logParser(QString title){
  * @param title - the title of the .stats to parse
  */
 void statsviewer::statsParser(QString title){
-    QDir dir(QApplication::applicationDirPath());
-    for(int i = 0; !dir.cd("stats") && i < 5; i++){ dir.cdUp(); }
-    QFile file(QString(dir.absolutePath() + "/") + title + ".stat");
-    if(!file.open(QIODevice::ReadOnly))
-        QMessageBox::information(0, "Error", file.errorString());
-    QTextStream stats(&file);
+    QFile * file = openfile(title + ".stat");
+    QTextStream stats(file);
 
     this->datesRead.clear();
 
@@ -110,6 +133,7 @@ void statsviewer::statsParser(QString title){
         total = 0;
     }
     ui->statsTypeBox->setCurrentIndex(2);
+    file->close();
 }
 
 /**
@@ -163,12 +187,8 @@ void statsviewer::generateGraph(){
  */
 void statsviewer::generateLifeLogGraph(){
 
-    QDir dir(QApplication::applicationDirPath());
-    for(int i = 0; !dir.cd("stats") && i < 5; i++){ dir.cdUp(); }
-    QFile file(QString(dir.absolutePath() + "/") + "journal.log");
-    if(!file.open(QIODevice::ReadOnly))
-        QMessageBox::information(0, "Error", file.errorString());
-    QTextStream log(&file);
+    QFile * file = openfile("journal.log");
+    QTextStream log(file);
 
     QString month("1");
     QString year("1");
@@ -196,7 +216,7 @@ void statsviewer::generateLifeLogGraph(){
     label.append(QString("  to  " + month + " " + year));
     const QString s(label);
 
-    file.close();
+    file->close();
     generateGraph();
     ui->titleDateLabel->setText(s);
     ui->statsTypeBox->setCurrentIndex(0);

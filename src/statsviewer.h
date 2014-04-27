@@ -44,9 +44,12 @@ private:
 
     bool dateflag;
     QString bookfile;
+    QString statspath;
 
     QString toggleOp1;
     QString toggleOp2;
+
+    QFile * openfile(QString title);
 
     void generateGraph();
     void generateLifeLogGraph();
