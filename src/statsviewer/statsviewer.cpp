@@ -20,6 +20,7 @@ statsviewer::statsviewer(QWidget *parent) :
     this->dateflag = false;
     this->toggleOp1 = QString("View Pages");
     this->toggleOp2 = QString("View Dates");
+    this->stretch = 1;
 
     generateLifeLogGraph();
 }
@@ -129,7 +130,7 @@ void statsviewer::statsParser(QString title){
             if(i == 0){ total = times[i].toInt(); }
             else{ total += times[i].toInt(); }
         }
-        this->datesRead.push_back( std::make_pair(QString("Page Number: " + QString::number(this->datesRead.size())), total) );
+        this->datesRead.push_back( std::make_pair(QString("p." + QString::number(this->datesRead.size())), total) );
         total = 0;
     }
     ui->statsTypeBox->setCurrentIndex(2);
@@ -143,38 +144,39 @@ void statsviewer::statsParser(QString title){
  *      number of pages read and diplays a chart
  */
 void statsviewer::generateGraph(){
+
     int width = ui->graphicsView->size().width();
     int height = ui->graphicsView->size().height();
     QGraphicsScene * scene = new QGraphicsScene();
 
     QFont f;
     f.setPointSize(7);
-    QPixmap p(5, 5);
+    QPixmap p(6, 6);
     p.fill(Qt::blue);
 
     // TODO: Add predictive reading chart
     QPainterPath pagepath(QPointF(-width / 2, height/4));
-    scene->addPixmap(p)->setPos(-width / 2, height/4);
-    scene->addText(QString("Start"), f)->setPos(-width / 2, height/4);
+    scene->addPixmap(p)->setPos(-width / 2 - 3, height/4 - 3);
 
     int hadj = height/4;
     int wadj = -width/2;
 
     this->datesRead.size();
     for(int i = 0; i < (int)this->datesRead.size(); i++){
-        int timestamp = (width/this->datesRead.size()) * i;
+        int timestamp = (width/this->datesRead.size()) * (i * stretch);
         int pagesRead = this->datesRead[i].second * 2;
-        pagepath.lineTo(QPointF(wadj + timestamp, hadj - pagesRead));
         if(dateflag){
             scene->addText(this->datesRead[i].first, f)->setPos(wadj + timestamp, hadj - pagesRead);
         }else{
             scene->addText(QString::number(this->datesRead[i].second), f)->setPos(wadj + timestamp, hadj - pagesRead);
         }
-        (scene->addPixmap(p))->setPos(wadj + timestamp, hadj - pagesRead);
+        pagepath.lineTo(QPointF(wadj + timestamp, hadj - pagesRead));
+        (scene->addPixmap(p))->setPos(wadj + timestamp - 3, hadj - pagesRead - 3);
     }
 
     QPen r(Qt::red);
     r.setWidth(2);
+
     scene->addPath( pagepath, r );
     ui->graphicsView->setScene(scene);
 }
@@ -275,13 +277,20 @@ void statsviewer::on_statsTypeBox_activated(const QString &arg1){
     else if(arg1.compare("Times Per Page", Qt::CaseInsensitive) == 0)
         statsParser(this->bookfile);
 
+    this->stretch = this->datesRead.size() >> 5 | 1;
     generateGraph();
 }
 
-void statsviewer::on_verticalSlider_valueChanged(int value){
+/**
+ * Private Slot of the statsviewer class
+ *
+ * @brief statsviewer::on_zoomSlider_valueChanged - Allows the user
+ *      to zoom in and out of the data
+ * @param value - the value/current location of the slidebar.
+ */
+void statsviewer::on_zoomSlider_valueChanged(int value){
     QMatrix matrix;
-    double zoom = 1 + (double)((double)value / 10.0);
-    std::cout << zoom << std::endl;
-    matrix.scale( zoom, zoom);
+    double zoom = 5.01 - (double)((double)value / 20.0);
+    matrix.scale(zoom, zoom);
     ui->graphicsView->setMatrix(matrix);
 }

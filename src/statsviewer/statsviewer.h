@@ -38,7 +38,7 @@ private slots:
 
     void on_statsTypeBox_activated(const QString &arg1);
 
-    void on_verticalSlider_valueChanged(int value);
+    void on_zoomSlider_valueChanged(int value);
 
 private:
 
@@ -51,6 +51,7 @@ private:
 
     QString toggleOp1;
     QString toggleOp2;
+    int stretch;
 
     QFile * openfile(QString title);
 

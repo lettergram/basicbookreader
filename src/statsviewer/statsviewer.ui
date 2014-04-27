@@ -14,17 +14,19 @@
    <string>AlphaBKZ Statistics</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <widget class="QLabel" name="titleDateLabel">
+   <item row="1" column="2">
+    <widget class="QComboBox" name="titleBox">
      <property name="maximumSize">
       <size>
-       <width>16777215</width>
-       <height>16</height>
+       <width>95</width>
+       <height>16777215</height>
       </size>
      </property>
-     <property name="text">
-      <string>Title | Start Date to End Date</string>
-     </property>
+     <item>
+      <property name="text">
+       <string>Title</string>
+      </property>
+     </item>
     </widget>
    </item>
    <item row="1" column="0" rowspan="5" colspan="2">
@@ -41,21 +43,6 @@
      <property name="text">
       <string>AlphaBkz Statisics Alpha v0.1</string>
      </property>
-    </widget>
-   </item>
-   <item row="1" column="2">
-    <widget class="QComboBox" name="titleBox">
-     <property name="maximumSize">
-      <size>
-       <width>95</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <item>
-      <property name="text">
-       <string>Title</string>
-      </property>
-     </item>
     </widget>
    </item>
    <item row="2" column="2">
@@ -96,8 +83,24 @@
      </property>
     </widget>
    </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="titleDateLabel">
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>16</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Title | Start Date to End Date</string>
+     </property>
+    </widget>
+   </item>
    <item row="4" column="2">
-    <widget class="QSlider" name="verticalSlider">
+    <widget class="QSlider" name="zoomSlider">
+     <property name="sliderPosition">
+      <number>80</number>
+     </property>
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
