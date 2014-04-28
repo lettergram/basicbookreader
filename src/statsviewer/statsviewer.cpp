@@ -184,6 +184,12 @@ void statsviewer::ratingParser(QString title, bool allTitles){
     file.close();
 }
 
+/**
+ * Private function of the statsviewer class
+ *
+ * @brief statsviewer::generateLifeRatings - populates the datesRead vector
+ *      with std::pair(title / dates, rating)
+ */
 void statsviewer::generateLifeRatings(){
 
     for(int i = 1; ui->titleBox->currentIndex() != -1; i++){
@@ -339,23 +345,21 @@ void statsviewer::on_statsTypeBox_activated(const QString &arg1){
 
     this->datesRead.clear();
 
-    std::cout << this->bookfile.toStdString() << std::endl;
-
     if(this->bookfile.compare("") == 0 || this->bookfile.compare("Title", Qt::CaseInsensitive) == 0){
         if(ui->statsTypeBox->currentText().compare("Overview", Qt::CaseInsensitive) == 0)
             generateLifeLogGraph();
         else if(ui->statsTypeBox->currentText().compare("Rating(s)", Qt::CaseInsensitive) == 0)
             generateLifeRatings();
+    }else{
+        if(arg1.compare("Journal", Qt::CaseInsensitive) == 0)
+            logParser(this->bookfile);
+        else if(arg1.compare("Times Per Page", Qt::CaseInsensitive) == 0)
+            statsParser(this->bookfile);
+        else if(arg1.compare("Rating(s)", Qt::CaseInsensitive) == 0)
+            ratingParser(this->bookfile, false);
     }
 
-    if(arg1.compare("Journal", Qt::CaseInsensitive) == 0)
-        logParser(this->bookfile);
-    else if(arg1.compare("Times Per Page", Qt::CaseInsensitive) == 0)
-        statsParser(this->bookfile);
-    else if(arg1.compare("Rating(s)", Qt::CaseInsensitive) == 0)
-        ratingParser(this->bookfile, false);
-
-    this->stretch = this->datesRead.size() >> 5 | 1;
+    this->stretch = (this->datesRead.size() >> 5) | 1;
     generateGraph();
 }
 

@@ -345,14 +345,16 @@ void BasicBookReader::keyPressEvent( QKeyEvent *k ){
 
     if(k->key() == Qt::Key_Right)
         on_nextButton_clicked();
-    if(k->key() == Qt::Key_Left)
+    else if(k->key() == Qt::Key_Left)
         on_prevButton_clicked();
-    if(k->key() == Qt::Key_Backspace)
+    else if(k->key() == Qt::Key_Backspace)
         this->releaseKeyboard();
-    if(k->key() == Qt::Key_O)
+    else if(k->key() == Qt::Key_O)
         on_toolButton_clicked();
-    if(k->key() == Qt::Key_B)
+    else if(k->key() == Qt::Key_B)
         on_saveBookButton_clicked();
+    else if(k->key() == Qt::Key_S)
+        on_viewStats_clicked();
     if(k->key() == Qt::Key_0
        || k->key() == Qt::Key_1
        || k->key() == Qt::Key_2
