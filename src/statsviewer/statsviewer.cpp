@@ -226,18 +226,16 @@ void statsviewer::generateGraph(){
     int wadj = -width/2;
     int offset = 0;
 
-    this->datesRead.size();
     for(int i = 0; i < (int)this->datesRead.size(); i++){
         int timestamp = (width/this->datesRead.size()) * (i * stretch);
         int pagesRead = this->datesRead[i].second * 2;
-        if(dateflag){
-            scene->addText(this->datesRead[i].first, f)->setPos(wadj + timestamp, hadj - pagesRead + offset);
-        }else{
-            scene->addText(QString::number(this->datesRead[i].second), f)->setPos(wadj + timestamp, hadj - pagesRead + offset);
-        }
+        if(dateflag)
+            scene->addText(this->datesRead[i].first, f)->setPos(wadj + timestamp, hadj - pagesRead + offset - 18);
+        else
+            scene->addText(QString::number(this->datesRead[i].second), f)->setPos(wadj + timestamp, hadj - pagesRead + offset - 18);
         pagepath.lineTo(QPointF(wadj + timestamp, hadj - pagesRead));
         (scene->addPixmap(p))->setPos(wadj + timestamp - 3, hadj - pagesRead - 3);
-        offset = -(offset^0x12);
+        offset = (offset^0x12);
     }
 
     QPen r(Qt::red);
@@ -347,14 +345,11 @@ void statsviewer::on_statsTypeBox_activated(const QString &arg1){
 
     this->datesRead.clear();
 
-    this->stretch = (this->datesRead.size() >> 5) | 1;
-
     if(this->bookfile.compare("") == 0 || this->bookfile.compare("Title", Qt::CaseInsensitive) == 0){
         if(ui->statsTypeBox->currentText().compare("Overview", Qt::CaseInsensitive) == 0)
             generateLifeLogGraph();
         else if(ui->statsTypeBox->currentText().compare("Rating(s)", Qt::CaseInsensitive) == 0){
             generateLifeRatings();
-            this->stretch = (this->datesRead.size() >> 2) | 1;
         }
     }else{
         if(arg1.compare("Journal", Qt::CaseInsensitive) == 0)
@@ -365,6 +360,7 @@ void statsviewer::on_statsTypeBox_activated(const QString &arg1){
             ratingParser(this->bookfile, false);
     }
 
+    this->stretch = (this->datesRead.size() >> 5) | 1;
     generateGraph();
 }
 
