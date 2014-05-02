@@ -351,9 +351,11 @@ void statsviewer::on_statsTypeBox_activated(const QString &arg1){
 
     this->datesRead.clear();
 
+    this->stretch = (this->datesRead.size() >> 5);
+
     if(this->bookfile.compare("") == 0 || this->bookfile.compare("Title", Qt::CaseInsensitive) == 0){
         this->flipflag = true;
-        this->stretch = (this->datesRead.size() >> 3) | 1;
+        this->stretch = (this->datesRead.size() >> 3);
         if(ui->statsTypeBox->currentText().compare("Overview", Qt::CaseInsensitive) == 0)
             generateLifeLogGraph();
         else if(ui->statsTypeBox->currentText().compare("Rating(s)", Qt::CaseInsensitive) == 0)
@@ -366,12 +368,12 @@ void statsviewer::on_statsTypeBox_activated(const QString &arg1){
             statsParser(this->bookfile);
         else if(arg1.compare("Rating(s)", Qt::CaseInsensitive) == 0)
             ratingParser(this->bookfile, false);
-        this->stretch = (this->datesRead.size() >> 5) | 1;
+        this->stretch = (this->datesRead.size() >> 5);
     }
 
-    ui->stretchSlider->setma
-    ui->stretchSlider->setValue(this->stretch);
+    if(this->stretch > 10 || this->stretch == 0){ this->stretch = 10; }
     generateGraph();
+    ui->stretchSlider->setValue(this->stretch);
 }
 
 /**
@@ -388,7 +390,15 @@ void statsviewer::on_zoomSlider_valueChanged(int value){
     ui->graphicsView->setMatrix(matrix);
 }
 
+/**
+ * Private Slot of the stats viewer class
+ *
+ * @brief statsviewer::on_stretchSlider_valueChanged - Allows the user
+ *          to horizontally strech the nodes
+ * @param value - the current location of the slide bar
+ */
 void statsviewer::on_stretchSlider_valueChanged(int value){
-    this->stretch = (this->datesRead.size() >> value) | 1;
+    this->stretch = (this->datesRead.size() >> value);
+    if(this->stretch == 0){ this->stretch = 1; }
     generateGraph();
 }
