@@ -18,10 +18,12 @@ statsviewer::statsviewer(QWidget *parent) :
     this->statspath = QString(dir.absolutePath() + "/");
 
     this->dateflag = false;
+    this->flipflag = false;
     this->bookfile = QString("");
     this->toggleOp1 = QString("View Pages");
     this->toggleOp2 = QString("View Dates");
     this->stretch = 1;
+
 
     generateLifeLogGraph();
 }
@@ -62,6 +64,8 @@ void statsviewer::updateAvgVal(){
 
     if(type[1].compare("Times", Qt::CaseInsensitive) == 0)
         displayAvg.append("Avg Time(s) Per Page: ");
+    else if(type[0].compare("Rating(s)", Qt::CaseInsensitive) == 0)
+        displayAvg.append("Avg Rating: ");
     else
         displayAvg.append("Avg Pages Visited: ");
 
@@ -225,17 +229,19 @@ void statsviewer::generateGraph(){
     int hadj = height/4;
     int wadj = -width/2;
     int offset = 0;
+    int origin = 0;
+    if(this->flipflag){ origin = 18; }
 
     for(int i = 0; i < (int)this->datesRead.size(); i++){
         int timestamp = (width/this->datesRead.size()) * (i * stretch);
         int pagesRead = this->datesRead[i].second * 2;
         if(dateflag)
-            scene->addText(this->datesRead[i].first, f)->setPos(wadj + timestamp, hadj - pagesRead + offset - 18);
+            scene->addText(this->datesRead[i].first, f)->setPos(wadj + timestamp, hadj - pagesRead + offset - origin);
         else
-            scene->addText(QString::number(this->datesRead[i].second), f)->setPos(wadj + timestamp, hadj - pagesRead + offset - 18);
+            scene->addText(QString::number(this->datesRead[i].second), f)->setPos(wadj + timestamp, hadj - pagesRead + offset - origin);
         pagepath.lineTo(QPointF(wadj + timestamp, hadj - pagesRead));
         (scene->addPixmap(p))->setPos(wadj + timestamp - 3, hadj - pagesRead - 3);
-        offset = (offset^0x12);
+        if(this->flipflag){ offset = (offset^0x12); }
     }
 
     QPen r(Qt::red);
@@ -345,22 +351,29 @@ void statsviewer::on_statsTypeBox_activated(const QString &arg1){
 
     this->datesRead.clear();
 
+    this->stretch = (this->datesRead.size() >> 6) | 1;
+
     if(this->bookfile.compare("") == 0 || this->bookfile.compare("Title", Qt::CaseInsensitive) == 0){
+
+        this->flipflag = true;
+
         if(ui->statsTypeBox->currentText().compare("Overview", Qt::CaseInsensitive) == 0)
             generateLifeLogGraph();
-        else if(ui->statsTypeBox->currentText().compare("Rating(s)", Qt::CaseInsensitive) == 0){
+        else if(ui->statsTypeBox->currentText().compare("Rating(s)", Qt::CaseInsensitive) == 0)
             generateLifeRatings();
-        }
     }else{
+
+        this->flipflag = false;
+
         if(arg1.compare("Journal", Qt::CaseInsensitive) == 0)
             logParser(this->bookfile);
         else if(arg1.compare("Times Per Page", Qt::CaseInsensitive) == 0)
             statsParser(this->bookfile);
         else if(arg1.compare("Rating(s)", Qt::CaseInsensitive) == 0)
             ratingParser(this->bookfile, false);
+        this->stretch = (this->datesRead.size() >> 2) | 1;
     }
 
-    this->stretch = (this->datesRead.size() >> 5) | 1;
     generateGraph();
 }
 

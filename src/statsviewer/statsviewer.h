@@ -46,6 +46,7 @@ private:
     Ui::statsviewer *ui;
 
     bool dateflag;
+    bool flipflag;
     QString bookfile;
     QString statspath;
 
