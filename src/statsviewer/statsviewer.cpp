@@ -24,7 +24,6 @@ statsviewer::statsviewer(QWidget *parent) :
     this->toggleOp2 = QString("View Dates");
     this->stretch = 1;
 
-
     generateLifeLogGraph();
 }
 
@@ -371,7 +370,8 @@ void statsviewer::on_statsTypeBox_activated(const QString &arg1){
         this->stretch = (this->datesRead.size() >> 5);
     }
 
-    if(this->stretch > 10 || this->stretch == 0){ this->stretch = 10; }
+    if(this->stretch > 10){ this->stretch = 10; }
+    if(this->stretch == 0){ this->stretch = 3; }
     generateGraph();
     ui->stretchSlider->setValue(this->stretch);
 }

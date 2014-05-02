@@ -6,13 +6,13 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>813</width>
+    <width>750</width>
     <height>610</height>
    </rect>
   </property>
   <property name="maximumSize">
    <size>
-    <width>16777215</width>
+    <width>780</width>
     <height>650</height>
    </size>
   </property>
@@ -65,29 +65,10 @@
       </property>
      </widget>
     </item>
-    <item row="5" column="7">
-     <widget class="QPushButton" name="enable_stats_button">
-      <property name="minimumSize">
-       <size>
-        <width>130</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>140</width>
-        <height>16777215</height>
-       </size>
-      </property>
-      <property name="text">
-       <string>Disable Statistics</string>
-      </property>
-     </widget>
-    </item>
     <item row="5" column="0" colspan="7">
      <widget class="QLabel" name="label">
       <property name="text">
-       <string>BasicBookReader Alpha v0.2</string>
+       <string>BBR Alpha v0.2</string>
       </property>
      </widget>
     </item>
@@ -190,6 +171,25 @@
      <widget class="QPushButton" name="viewStats">
       <property name="text">
        <string>Statistics</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="8">
+     <widget class="QPushButton" name="enable_stats_button">
+      <property name="minimumSize">
+       <size>
+        <width>130</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>140</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>Disable Statistics</string>
       </property>
      </widget>
     </item>
