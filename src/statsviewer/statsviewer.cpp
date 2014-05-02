@@ -354,24 +354,20 @@ void statsviewer::on_statsTypeBox_activated(const QString &arg1){
     this->stretch = (this->datesRead.size() >> 6) | 1;
 
     if(this->bookfile.compare("") == 0 || this->bookfile.compare("Title", Qt::CaseInsensitive) == 0){
-
         this->flipflag = true;
-
         if(ui->statsTypeBox->currentText().compare("Overview", Qt::CaseInsensitive) == 0)
             generateLifeLogGraph();
         else if(ui->statsTypeBox->currentText().compare("Rating(s)", Qt::CaseInsensitive) == 0)
             generateLifeRatings();
     }else{
-
         this->flipflag = false;
-
         if(arg1.compare("Journal", Qt::CaseInsensitive) == 0)
             logParser(this->bookfile);
         else if(arg1.compare("Times Per Page", Qt::CaseInsensitive) == 0)
             statsParser(this->bookfile);
         else if(arg1.compare("Rating(s)", Qt::CaseInsensitive) == 0)
             ratingParser(this->bookfile, false);
-        this->stretch = (this->datesRead.size() >> 2) | 1;
+        this->stretch = (this->datesRead.size() >> 5) | 1;
     }
 
     generateGraph();
