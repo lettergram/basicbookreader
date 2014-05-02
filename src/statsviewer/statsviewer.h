@@ -40,6 +40,8 @@ private slots:
 
     void on_zoomSlider_valueChanged(int value);
 
+    void on_stretchSlider_valueChanged(int value);
+
 private:
 
     std::vector< std::pair<QString, int > > datesRead; // Stores time read and number of pages

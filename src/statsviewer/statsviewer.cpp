@@ -351,10 +351,9 @@ void statsviewer::on_statsTypeBox_activated(const QString &arg1){
 
     this->datesRead.clear();
 
-    this->stretch = (this->datesRead.size() >> 6) | 1;
-
     if(this->bookfile.compare("") == 0 || this->bookfile.compare("Title", Qt::CaseInsensitive) == 0){
         this->flipflag = true;
+        this->stretch = (this->datesRead.size() >> 3) | 1;
         if(ui->statsTypeBox->currentText().compare("Overview", Qt::CaseInsensitive) == 0)
             generateLifeLogGraph();
         else if(ui->statsTypeBox->currentText().compare("Rating(s)", Qt::CaseInsensitive) == 0)
@@ -370,6 +369,8 @@ void statsviewer::on_statsTypeBox_activated(const QString &arg1){
         this->stretch = (this->datesRead.size() >> 5) | 1;
     }
 
+    ui->stretchSlider->setma
+    ui->stretchSlider->setValue(this->stretch);
     generateGraph();
 }
 
@@ -385,4 +386,9 @@ void statsviewer::on_zoomSlider_valueChanged(int value){
     double zoom = 5.01 - (double)((double)value / 20.0);
     matrix.scale(zoom, zoom);
     ui->graphicsView->setMatrix(matrix);
+}
+
+void statsviewer::on_stretchSlider_valueChanged(int value){
+    this->stretch = (this->datesRead.size() >> value) | 1;
+    generateGraph();
 }
