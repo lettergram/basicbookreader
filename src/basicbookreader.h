@@ -47,6 +47,13 @@ private:
     Ui::BasicBookReader *ui;
     statsviewer * sv;
 
+    current_book * book;
+    library * lib;
+    QString * lib_loc;
+    statistics * stats;
+    std::vector< QString > highlight;
+    QString search;
+
     void loadpage();
     void loadNewBook();
 

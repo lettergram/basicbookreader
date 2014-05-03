@@ -32,7 +32,7 @@ void library::load_database(QString lib_loc){
         open.append(*b.title);
         b.file = new QFile(open);
 
-        b.pagenum = new int(database.readLine().toInt());
+        b.pagenum = database.readLine().toInt();
 
         QString chapters = database.readLine();
         QStringList list = chapters.split(",", QString::SkipEmptyParts);
@@ -75,9 +75,9 @@ void library::loadbook(int index, current_book * book){
 
     book->stream = new QTextStream(book->file);
 
-    if(!book->stream->seek(book->page.value(*book->pagenum))){
+    if(!book->stream->seek(book->page.value(book->pagenum))){
         book->stream->seek(0);
-        (*book->pagenum) = 0;
+        (book->pagenum) = 0;
     }
 }
 
@@ -104,7 +104,7 @@ void library::save_bookinfo_to_database(QString lib_loc){
     for(int i = start; i < books.count(); i++){
         database << *books[i].title << "\n";
         database << *books[i].file_location << "\n";
-        database << *books[i].pagenum << "\n";
+        database << books[i].pagenum << "\n";
 
         for(int j = 0; j < books[i].chapter.count(); j++)
             database << QString::number(books[i].chapter.value(j)) << ",";
@@ -189,7 +189,7 @@ void library::init_book(current_book * book){
     if(!book->file->open(QIODevice::ReadOnly))
         QMessageBox::information(0, "Error", book->file->errorString());
 
-    book->pagenum = new int(0);
+    book->pagenum = 0;
     book->stream = new QTextStream(book->file);
 
     index_book(book);

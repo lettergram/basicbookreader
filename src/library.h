@@ -20,7 +20,7 @@ typedef struct _current_book{
     QFile * file;
 
     QTextStream * stream;
-    int * pagenum;
+    int pagenum;
 
     QList<int> page;     // list of positions that represent pages
     QList<int> chapter;  // List of page number the term chapter appears

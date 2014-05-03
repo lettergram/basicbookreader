@@ -8,13 +8,6 @@
 #include <QCursor>
 #include <QPoint>
 
-current_book * book;
-library * lib;
-QString * lib_loc;
-statistics * stats;
-std::vector< QString > highlight;
-QString * search;
-
 /**
  *  Constructor of the BasicBookReader class
  *
@@ -37,13 +30,14 @@ BasicBookReader::BasicBookReader(QWidget *parent) :
             if(i++ == 5){ break; }
         }
 
-        lib_loc = new QString(dir.absolutePath() + "/");
+        this->lib_loc = new QString(dir.absolutePath() + "/");
 
-        lib = new library(*lib_loc);
-        book = new current_book();
+        this->lib = new library(*this->lib_loc);
+        this->book = new current_book();
+        this->stats = NULL;
 
-        book->file_location = new QString(*lib_loc);
-        search = new QString("Pages");
+        this->book->file_location = new QString(*this->lib_loc);
+        this->search = QString("Pages");
         this->grabKeyboard();
 }
 
@@ -57,12 +51,12 @@ BasicBookReader::~BasicBookReader(){
 
     this->releaseKeyboard();
 
-    if(stats != NULL){
-        stats->endPage(*book->pagenum);
-        delete stats;
+    if(this->stats!= NULL){
+        this->stats->endPage(this->book->pagenum);
+        delete this->stats;
     }
 
-    lib->save_bookinfo_to_database(*lib_loc);
+    this->lib->save_bookinfo_to_database(*this->lib_loc);
 
     delete book;
     delete ui;
@@ -74,10 +68,10 @@ BasicBookReader::~BasicBookReader(){
  * @brief BasicBookReader::on_nextbutton_clicked - loads next page
  */
 void BasicBookReader::on_nextButton_clicked(){
-    if(book->stream == NULL){ return; }
-    if(*book->pagenum >= book->page.size() - 1){ return; }
-    stats->endPage(*book->pagenum);
-    (*book->pagenum)++;
+    if(this->book->stream == NULL){ return; }
+    if(this->book->pagenum >= this->book->page.size() - 1){ return; }
+    this->stats->endPage(this->book->pagenum);
+    (this->book->pagenum)++;
     this->grabKeyboard();
     loadpage();
 }
@@ -89,15 +83,15 @@ void BasicBookReader::on_nextButton_clicked(){
  */
 void BasicBookReader::on_prevButton_clicked(){
 
-    if(book->stream == NULL){ return; }
-    if((*book->pagenum) > 0){
-        stats->endPage(*book->pagenum);
-        (*book->pagenum)--;
+    if(this->book->stream == NULL){ return; }
+    if((this->book->pagenum) > 0){
+        this->stats->endPage(this->book->pagenum);
+        (this->book->pagenum)--;
     }
 
-    if(!book->stream->seek(book->page[*book->pagenum])){
-        book->stream->seek(0);
-        (*book->pagenum) = 0;
+    if(!this->book->stream->seek(this->book->page[this->book->pagenum])){
+        this->book->stream->seek(0);
+        this->book->pagenum = 0;
     }
 
     this->grabKeyboard();
@@ -110,7 +104,7 @@ void BasicBookReader::on_prevButton_clicked(){
  * @brief BasicBookReader::on_saveBookButton_clicked - saves the book to the library
  */
 void BasicBookReader::on_saveBookButton_clicked(){
-    lib->save_bookinfo_to_database(*lib_loc);
+    this->lib->save_bookinfo_to_database(*this->lib_loc);
 }
 
 /**
@@ -121,22 +115,22 @@ void BasicBookReader::on_saveBookButton_clicked(){
  */
 void BasicBookReader::on_lineEdit_page_textEdited(const QString &arg1){
 
-    if(book->stream == NULL){ return; }
-    stats->endPage((*book->pagenum));
+    if(this->book->stream == NULL){ return; }
+    this->stats->endPage((this->book->pagenum));
 
-    if(arg1.toInt() > book->page.count())
+    if(arg1.toInt() > this->book->page.count())
         QMessageBox::information(0, "Error", "Pages out of bounds");
 
-    if((*search).compare(QString("Chapters"), Qt::CaseInsensitive) == 0){
-        if(arg1.toInt() > book->chapter.count() - 1){ return; }
-        *book->pagenum = book->chapter[arg1.toInt()];
+    if((this->search).compare(QString("Chapters"), Qt::CaseInsensitive) == 0){
+        if(arg1.toInt() > this->book->chapter.count() - 1){ return; }
+        this->book->pagenum = this->book->chapter[arg1.toInt()];
     }else{
-        if(arg1.toInt() > book->page.count() - 1){ return; }
-        *book->pagenum = arg1.toInt();
+        if(arg1.toInt() > this->book->page.count() - 1){ return; }
+        this->book->pagenum = arg1.toInt();
     }
 
-    stats->endPage(*book->pagenum);
-    book->stream->seek(book->page[*book->pagenum]);
+    this->stats->endPage(this->book->pagenum);
+    this->book->stream->seek(this->book->page[this->book->pagenum]);
     loadpage();
 }
 
@@ -149,13 +143,13 @@ void BasicBookReader::on_lineEdit_page_textEdited(const QString &arg1){
  */
 void BasicBookReader::on_toolButton_clicked(){
 
-    QString fileName = QFileDialog::getOpenFileName(this, "Select a file to open...", (*book->file_location));
+    QString fileName = QFileDialog::getOpenFileName(this, "Select a file to open...", (*this->book->file_location));
     if(fileName == NULL){ return; }
 
     QStringList list = fileName.split("/", QString::SkipEmptyParts);
-    book->title = new QString(list[list.count() - 1]);
+    this->book->title = new QString(list[list.count() - 1]);
 
-    book->file_location = new QString(fileName.remove((*book->title), Qt::CaseInsensitive));
+    this->book->file_location = new QString(fileName.remove((*this->book->title), Qt::CaseInsensitive));
 
     loadNewBook();
 }
@@ -167,13 +161,13 @@ void BasicBookReader::on_toolButton_clicked(){
  *              (this is default).
  */
 void BasicBookReader::on_enable_stats_button_clicked(){
-    if(stats == NULL){ return; }
+    if(this->stats== NULL){ return; }
     if((ui->enable_stats_button->text()).compare(QString("Enable  Statistics"), Qt::CaseInsensitive) == 0){
-        stats->enableStats();
+        this->stats->enableStats();
         QMessageBox::information(0, "Statistics", "Statistics Enabled");
         ui->enable_stats_button->setText("Disable Statistics");
     }else{
-        stats->disableStats();
+        this->stats->disableStats();
         QMessageBox::information(0, "Statistics", "Statistics Disabled");
         ui->enable_stats_button->setText("Enable  Statistics");
     }
@@ -189,22 +183,22 @@ void BasicBookReader::on_enable_stats_button_clicked(){
 void BasicBookReader::loadpage(){
 
     QString str("");
-    highlight.clear();
+    this->highlight.clear();
 
     for(int i = 0; i < LINESPERPAGE; i++){
-        QString toadd(book->stream->readLine(85));
+        QString toadd(this->book->stream->readLine(85));
         if(toadd.size() > 84)
             str.append(toadd + '-' + '\n');
         else
             str.append(toadd + '\n');
     }
 
-    str.append(QString(QString("Page: ") + QString::number(*book->pagenum)
-               + " / " + QString::number(book->page.count() - 1) + '\n').rightJustified(135, ' '));
+    str.append(QString(QString("Page: ") + QString::number(this->book->pagenum)
+               + " / " + QString::number(this->book->page.count() - 1) + '\n').rightJustified(135, ' '));
 
     const QString * display = &str;
 
-    stats->startPage(*book->pagenum);
+    this->stats->startPage(this->book->pagenum);
     ui->textBrowser->setText(*display);
 }
 
@@ -215,23 +209,26 @@ void BasicBookReader::loadpage(){
  * Closing the previously open book as well as the accompaning statistics
  */
 void BasicBookReader::loadNewBook(){
-    if(stats != NULL){
-        if(book != NULL){ stats->endPage(*book->pagenum); }
-        delete stats;
-    }
-    lib->closeBook(book);
 
-    for(int i = 0; i < lib->books.count(); i++){
-        if(book->title->compare(lib->books[i].title, Qt::CaseInsensitive) == 0){
-            lib->loadbook(i, book);
-            stats = new statistics(*book->title, book->page.count(), LINESPERPAGE);
+    if(this->stats != NULL){
+        if(this->book != NULL){
+            this->stats->endPage(this->book->pagenum);
+        }
+        delete this->stats;
+    }
+    this->lib->closeBook(this->book);
+
+    for(int i = 0; i < this->lib->books.count(); i++){
+        if(this->book->title->compare(this->lib->books[i].title, Qt::CaseInsensitive) == 0){
+            this->lib->loadbook(i, this->book);
+            this->stats= new statistics(*this->book->title, this->book->page.count(), LINESPERPAGE);
             loadpage();
             return;
         }
     }
 
-    lib->init_book(book);
-    stats = new statistics(*book->title, book->page.count(), LINESPERPAGE);
+    this->lib->init_book(this->book);
+    this->stats= new statistics(*this->book->title, this->book->page.count(), LINESPERPAGE);
     loadpage();
 
 }
@@ -243,26 +240,26 @@ void BasicBookReader::loadNewBook(){
  */
 void BasicBookReader::on_textBrowser_selectionChanged(){
 
-    if(book == NULL || book->stream == NULL){ return; }
+    if(this->book == NULL || this->book->stream == NULL){ return; }
 
     QPoint pos = QCursor::pos();
 
     int y = int(double(pos.y() - 130) / 15.8);
     int x = int(double(pos.x() - 357));             // TODO save between to save particular words
 
-    book->stream->seek(book->page[*book->pagenum]);
+    this->book->stream->seek(this->book->page[this->book->pagenum]);
 
-    if( highlight.size() == 0) { highlight.resize(LINESPERPAGE); }
+    if( this->highlight.size() == 0) { this->highlight.resize(LINESPERPAGE); }
 
     for(int i = 0; i < LINESPERPAGE; i++){
-        QString line(book->stream->readLine(85) + '\n');
+        QString line(this->book->stream->readLine(85) + '\n');
         if(i == y){
-            stats->xcursor[i].push_back(x);
-            if(highlight[i] == NULL){ highlight[i].append(line); }
+            this->stats->xcursor[i].push_back(x);
+            if(this->highlight[i] == NULL){ this->highlight[i].append(line); }
         }
     }
 
-    book->stream->seek(book->page[*book->pagenum]);
+    this->book->stream->seek(this->book->page[this->book->pagenum]);
 }
 
 
@@ -274,11 +271,11 @@ void BasicBookReader::on_textBrowser_selectionChanged(){
  */
 void BasicBookReader::on_pushNoteButton_clicked(){
 
-    if(book == NULL){ return; }
-    if(stats == NULL){ return; }
+    if(this->book == NULL){ return; }
+    if(this->stats== NULL){ return; }
     this->releaseKeyboard();
     bool ok;
-    QStringList title = (*book->title).split(".", QString::SkipEmptyParts);
+    QStringList title = (*this->book->title).split(".", QString::SkipEmptyParts);
     QString note = QInputDialog::getText(this, tr("Highlights and Notes"),
                                          tr("Note"), QLineEdit::Normal,
                                          QDir::home().dirName(), &ok);
@@ -295,15 +292,15 @@ void BasicBookReader::on_pushNoteButton_clicked(){
 
     QTextStream stream(&file);
 
-    stream << title[0] << ", page " << *book->pagenum << ": " << endl;
+    stream << title[0] << ", page " << this->book->pagenum << ": " << endl;
     stream << "Quote:\n'";
-    for(unsigned long i = 0; i < highlight.size(); i++)
-        stream << highlight[i];
+    for(unsigned long i = 0; i < this->highlight.size(); i++)
+        stream << this->highlight[i];
     stream << "'" << endl;
     stream << "Note: " << note << endl;
     stream << "---------------------------\n" << endl;
 
-    highlight.clear();
+    this->highlight.clear();
 
     file.close();
 }
@@ -316,8 +313,8 @@ void BasicBookReader::on_pushNoteButton_clicked(){
  * @param arg1 - the item you are searching for
  */
 void BasicBookReader::on_search_type_currentIndexChanged(const QString &arg1){
-    search = new QString(arg1);
-    if((*search).compare(QString("Chapters"), Qt::CaseInsensitive) == 0)
+    this->search = QString(arg1);
+    if((this->search).compare(QString("Chapters"), Qt::CaseInsensitive) == 0)
         QMessageBox::information(0, "Experimental", "This is experimental and may not work");
 }
 
@@ -330,8 +327,8 @@ void BasicBookReader::on_search_type_currentIndexChanged(const QString &arg1){
  */
 void BasicBookReader::on_user_rating_currentIndexChanged(int index){
 
-    if(book == NULL){ return; }
-    stats->usrsrating(index);
+    if(this->book == NULL){ return; }
+    this->stats->usrsrating(index);
 }
 
 /**
@@ -380,8 +377,8 @@ void BasicBookReader::on_viewStats_clicked(){
 
     sv = new statsviewer();
     QStringList titles;
-    for(int i = 0; i < lib->books.size(); i++)
-        titles.append(*lib->books[i].title);
+    for(int i = 0; i < this->lib->books.size(); i++)
+        titles.append(*this->lib->books[i].title);
     sv->initTitle(titles);
     sv->show();
 }
