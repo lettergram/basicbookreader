@@ -1,7 +1,7 @@
 #ifndef LIBRARY_H
 #define LIBRARY_H
 
-#include <Qfile>
+#include <QFile>
 #include <QTextStream>
 #include <QString>
 #include <QMessageBox>

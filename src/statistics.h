@@ -1,7 +1,7 @@
 #ifndef STATISTICS_H
 #define STATISTICS_H
 
-#include <Qfile>
+#include <QFile>
 #include <QTextStream>
 #include <QString>
 #include <QMessageBox>
