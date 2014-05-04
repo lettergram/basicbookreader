@@ -349,17 +349,18 @@ void statsviewer::on_timesToggle_clicked(){
 void statsviewer::on_statsTypeBox_activated(const QString &arg1){
 
     this->datesRead.clear();
-
-    this->stretch = (this->datesRead.size() >> 5);
+    this->stretch = (this->datesRead.size() >> 4);
 
     if(this->bookfile.compare("") == 0 || this->bookfile.compare("Title", Qt::CaseInsensitive) == 0){
+
         this->flipflag = true;
-        this->stretch = (this->datesRead.size() >> 3);
         if(ui->statsTypeBox->currentText().compare("Overview", Qt::CaseInsensitive) == 0)
             generateLifeLogGraph();
         else if(ui->statsTypeBox->currentText().compare("Rating(s)", Qt::CaseInsensitive) == 0)
             generateLifeRatings();
+
     }else{
+
         this->flipflag = false;
         if(arg1.compare("Journal", Qt::CaseInsensitive) == 0)
             logParser(this->bookfile);
@@ -367,7 +368,7 @@ void statsviewer::on_statsTypeBox_activated(const QString &arg1){
             statsParser(this->bookfile);
         else if(arg1.compare("Rating(s)", Qt::CaseInsensitive) == 0)
             ratingParser(this->bookfile, false);
-        this->stretch = (this->datesRead.size() >> 5);
+
     }
 
     if(this->stretch > 10){ this->stretch = 10; }

@@ -17,9 +17,6 @@ typedef struct _current_book{
 
     const QString * file_location;
     const QString * title;
-    QFile * file;
-
-    QTextStream * stream;
     int pagenum;
 
     QList<int> page;     // list of positions that represent pages

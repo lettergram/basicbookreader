@@ -68,7 +68,7 @@ BasicBookReader::~BasicBookReader(){
  * @brief BasicBookReader::on_nextbutton_clicked - loads next page
  */
 void BasicBookReader::on_nextButton_clicked(){
-    if(this->book->stream == NULL){ return; }
+    if(this->book == NULL){ return; }
     if(this->book->pagenum >= this->book->page.size() - 1){ return; }
     this->stats->endPage(this->book->pagenum);
     (this->book->pagenum)++;
@@ -83,15 +83,10 @@ void BasicBookReader::on_nextButton_clicked(){
  */
 void BasicBookReader::on_prevButton_clicked(){
 
-    if(this->book->stream == NULL){ return; }
+    if(this->book == NULL){ return; }
     if((this->book->pagenum) > 0){
         this->stats->endPage(this->book->pagenum);
         (this->book->pagenum)--;
-    }
-
-    if(!this->book->stream->seek(this->book->page[this->book->pagenum])){
-        this->book->stream->seek(0);
-        this->book->pagenum = 0;
     }
 
     this->grabKeyboard();
@@ -115,7 +110,7 @@ void BasicBookReader::on_saveBookButton_clicked(){
  */
 void BasicBookReader::on_lineEdit_page_textEdited(const QString &arg1){
 
-    if(this->book->stream == NULL){ return; }
+    if(this->book == NULL){ return; }
     this->stats->endPage((this->book->pagenum));
 
     if(arg1.toInt() > this->book->page.count())
@@ -130,7 +125,6 @@ void BasicBookReader::on_lineEdit_page_textEdited(const QString &arg1){
     }
 
     this->stats->endPage(this->book->pagenum);
-    this->book->stream->seek(this->book->page[this->book->pagenum]);
     loadpage();
 }
 
@@ -185,8 +179,17 @@ void BasicBookReader::loadpage(){
     QString str("");
     this->highlight.clear();
 
+    QFile file(*book->file_location + *book->title);
+    if(!file.open(QIODevice::ReadOnly))
+        QMessageBox::information(0, "Error", file.errorString());
+    QTextStream stream(&file);
+
+    if(!stream.seek(this->book->page[this->book->pagenum])){
+        stream.seek(0);
+        this->book->pagenum = 0;
+    }
     for(int i = 0; i < LINESPERPAGE; i++){
-        QString toadd(this->book->stream->readLine(85));
+        QString toadd(stream.readLine(85));
         if(toadd.size() > 84)
             str.append(toadd + '-' + '\n');
         else
@@ -200,6 +203,7 @@ void BasicBookReader::loadpage(){
 
     this->stats->startPage(this->book->pagenum);
     ui->textBrowser->setText(*display);
+    file.close();
 }
 
 /**
@@ -236,30 +240,36 @@ void BasicBookReader::loadNewBook(){
 /**
  * Public Function of the BasicBookReader class
  *
- * @brief BasicBookReader::on_textBrowser_selectionChanged
+ * @brief BasicBookReader::on_textBrowser_selectionChanged - what has been
+ *          highlighted for notes
  */
 void BasicBookReader::on_textBrowser_selectionChanged(){
 
-    if(this->book == NULL || this->book->stream == NULL){ return; }
+    if(this->book == NULL || this->book->page.size() == 0){ return; }
 
     QPoint pos = QCursor::pos();
 
-    int y = int(double(pos.y() - 130) / 15.8);
+    int y = int(double(pos.y() - 130) / 16.8);
     int x = int(double(pos.x() - 357));             // TODO save between to save particular words
 
-    this->book->stream->seek(this->book->page[this->book->pagenum]);
+    QFile file(*book->file_location + *book->title);
+    if(!file.open(QIODevice::ReadOnly))
+        QMessageBox::information(0, "Error", file.errorString());
+    QTextStream stream(&file);
+    stream.seek(this->book->page[this->book->pagenum]);
 
     if( this->highlight.size() == 0) { this->highlight.resize(LINESPERPAGE); }
 
     for(int i = 0; i < LINESPERPAGE; i++){
-        QString line(this->book->stream->readLine(85) + '\n');
+        QString line(stream.readLine(85) + '\n');
         if(i == y){
             this->stats->xcursor[i].push_back(x);
             if(this->highlight[i] == NULL){ this->highlight[i].append(line); }
         }
     }
 
-    this->book->stream->seek(this->book->page[this->book->pagenum]);
+    stream.seek(this->book->page[this->book->pagenum]);
+    file.close();
 }
 
 

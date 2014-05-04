@@ -30,7 +30,6 @@ void library::load_database(QString lib_loc){
 
         QString open(*b.file_location);
         open.append(*b.title);
-        b.file = new QFile(open);
 
         b.pagenum = database.readLine().toInt();
 
@@ -59,7 +58,6 @@ void library::load_database(QString lib_loc){
  */
 void library::loadbook(int index, current_book * book){
 
-    book->file = this->books[index].file;
     book->pagenum = this->books[index].pagenum;
     book->title = this->books[index].title;
     book->file_location = this->books[index].file_location;
@@ -70,15 +68,17 @@ void library::loadbook(int index, current_book * book){
     for(int i = 0; i < this->books[index].page.count(); i++)
         book->page.append(this->books[index].page[i]);
 
-    if(!book->file->open(QIODevice::ReadOnly))
-        QMessageBox::information(0, "Error", book->file->errorString());
+    QFile file(*book->file_location + *book->title);
+    if(!file.open(QIODevice::ReadOnly))
+        QMessageBox::information(0, "Error", file.errorString());
 
-    book->stream = new QTextStream(book->file);
+    QTextStream stream(&file);
 
-    if(!book->stream->seek(book->page.value(book->pagenum))){
-        book->stream->seek(0);
+    if(!stream.seek(book->page.value(book->pagenum))){
+        stream.seek(0);
         (book->pagenum) = 0;
     }
+    file.close();
 }
 
 /**
@@ -119,7 +119,7 @@ void library::save_bookinfo_to_database(QString lib_loc){
 /**
  * Public Function of the library class
  *
- * @brief init_book - This function is a helper function used to initialize the book struct
+ * @brief index_book - This function is a helper function which indexes the books pages
  * @param book - The book which needs an index
  */
 void library::index_book(current_book* book){
@@ -127,13 +127,18 @@ void library::index_book(current_book* book){
     QMessageBox::information(0, "Indexing"
              , "We need to index your book,\nbecause it is new to the library!\n(this may take up to 20 seconds)");
 
+    QFile file(*book->file_location + *book->title);
+    if(!file.open(QIODevice::ReadOnly))
+        QMessageBox::information(0, "Error", file.errorString());
+    QTextStream stream(&file);
+
     book->page.push_back(0);
     book->chapter.push_back(0);
     int tableofcontents = 6;
-    for(int page = 0; !book->stream->atEnd(); page++){
+    for(int page = 0; !stream.atEnd(); page++){
         tableofcontents--;
         for(int i = 0; i < LINESPERPAGE; i++){
-            QString check = book->stream->readLine(85);
+            QString check = stream.readLine(85);
             QStringList words = check.split(" ", QString::SkipEmptyParts);
             for(int j = 0; j < words.count(); j++){
                 if(tableofcontents > 0){ break; }
@@ -143,11 +148,9 @@ void library::index_book(current_book* book){
                 }
             }
         }
-        book->page.push_back(book->stream->pos());
+        book->page.push_back(stream.pos());
     }
-
-    book->stream->seek(0);
-    book->stream->resetStatus();
+    file.close();
 }
 
 /**
@@ -158,10 +161,14 @@ void library::index_book(current_book* book){
  * @param book - book to be closed
  */
 void library::closeBook(current_book* book){
-    if(book == NULL || book->file == NULL)
+    if(book == NULL || book->file_location->size() == 0)
         return;
-    if(book->file->isOpen())
-        book->file->close();
+    for(int i = 0; i < this->books.size(); i++){
+        if(this->books[i].title->compare(book->title, Qt::CaseInsensitive)){
+            this->books[i].pagenum = book->pagenum;
+            break;
+        }
+    }
     book->page.clear();
 }
 
@@ -173,6 +180,8 @@ void library::closeBook(current_book* book){
  */
 void library::init_book(current_book * book){
 
+    if(book == NULL){ return; }
+
     for(int i = 0; i < this->books.count(); i++){
         if(book->title->compare(this->books[i].title, Qt::CaseInsensitive) == 0){
             loadbook(i, book);
@@ -183,15 +192,14 @@ void library::init_book(current_book * book){
     QString open(*book->file_location);
     open.append(*book->title);
 
-    if(book->file_location->size() > 0 || book->title->size() > 4)
-        book->file = new QFile(open);
-
-    if(!book->file->open(QIODevice::ReadOnly))
-        QMessageBox::information(0, "Error", book->file->errorString());
+    QFile file(*book->file_location + *book->title);
+    if(!file.open(QIODevice::ReadOnly)){
+        QMessageBox::information(0, "Error", "No Book Found");
+        return;
+    }
 
     book->pagenum = 0;
-    book->stream = new QTextStream(book->file);
-
     index_book(book);
     books.append(*book);
+    file.close();
 }
