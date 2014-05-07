@@ -15,6 +15,7 @@ static int liblimit = 50;
 
 typedef struct _current_book{
 
+    bool open;
     const QString * file_location;
     const QString * title;
     int pagenum;

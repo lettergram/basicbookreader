@@ -35,6 +35,7 @@ BasicBookReader::BasicBookReader(QWidget *parent) :
         this->lib = new library(*this->lib_loc);
         this->book = new current_book();
         this->stats = NULL;
+        this->book->open = false;
 
         this->book->file_location = new QString(*this->lib_loc);
         this->search = QString("Pages");
@@ -51,6 +52,8 @@ BasicBookReader::~BasicBookReader(){
 
     this->releaseKeyboard();
 
+    if(this->book != NULL){ lib->closeBook(this->book); }
+  
     if(this->stats!= NULL){
         this->stats->endPage(this->book->pagenum);
         delete this->stats;
@@ -99,7 +102,13 @@ void BasicBookReader::on_prevButton_clicked(){
  * @brief BasicBookReader::on_saveBookButton_clicked - saves the book to the library
  */
 void BasicBookReader::on_saveBookButton_clicked(){
-    this->lib->save_bookinfo_to_database(*this->lib_loc);
+    if(book == NULL){ return; }
+    for(int i = 0; i < lib->books.size(); i++){
+        if(book->title->compare(lib->books[i].title, Qt::CaseInsensitive) == 0){
+            lib->books[i].pagenum = book->pagenum;
+        }
+    }
+    lib->save_bookinfo_to_database(*lib_loc);
 }
 
 /**
@@ -132,10 +141,20 @@ void BasicBookReader::on_lineEdit_page_textEdited(const QString &arg1){
  * Public Function of the BasicBookReader class
  *
  * @brief BasicBookReader::on_toolButton_clicked - if the tool button is clicked
- * a window appears where you can choose what book to load. This function is called
- * and will parse the file and load the book
+ *      a window appears where you can choose what book to load. This function is called
+ *      and will parse the file and load the book
  */
 void BasicBookReader::on_toolButton_clicked(){
+
+    if(this->stats != NULL){
+        if(this->book != NULL){
+            this->stats->endPage(this->book->pagenum);
+        }
+        delete this->stats;
+    }
+
+    if(book->open)
+      this->lib->closeBook(this->book);
 
     QString fileName = QFileDialog::getOpenFileName(this, "Select a file to open...", (*this->book->file_location));
     if(fileName == NULL){ return; }
@@ -214,14 +233,6 @@ void BasicBookReader::loadpage(){
  */
 void BasicBookReader::loadNewBook(){
 
-    if(this->stats != NULL){
-        if(this->book != NULL){
-            this->stats->endPage(this->book->pagenum);
-        }
-        delete this->stats;
-    }
-    this->lib->closeBook(this->book);
-
     for(int i = 0; i < this->lib->books.count(); i++){
         if(this->book->title->compare(this->lib->books[i].title, Qt::CaseInsensitive) == 0){
             this->lib->loadbook(i, this->book);
@@ -231,10 +242,11 @@ void BasicBookReader::loadNewBook(){
         }
     }
 
+    this->book->open = true;
+
     this->lib->init_book(this->book);
     this->stats= new statistics(*this->book->title, this->book->page.count(), LINESPERPAGE);
     loadpage();
-
 }
 
 /**

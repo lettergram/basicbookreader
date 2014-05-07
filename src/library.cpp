@@ -78,6 +78,9 @@ void library::loadbook(int index, current_book * book){
         stream.seek(0);
         (book->pagenum) = 0;
     }
+
+    book->open = true;
+
     file.close();
 }
 
@@ -114,6 +117,7 @@ void library::save_bookinfo_to_database(QString lib_loc){
             database << QString::number(books[i].page.value(j)) << ",";
         database << "\n";
     }
+    file.close();
 }
 
 /**
@@ -169,6 +173,7 @@ void library::closeBook(current_book* book){
             break;
         }
     }
+    book->open = false;
     book->page.clear();
 }
 
