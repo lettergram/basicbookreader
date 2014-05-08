@@ -377,9 +377,6 @@ void statsviewer::on_statsTypeBox_activated(const QString &arg1){
     }
 
     ui->stretchSlider->setValue(4);
-    generateGraph();
-
-    std::cout << this->stretch << std::endl;
 }
 
 /**
@@ -406,7 +403,8 @@ void statsviewer::on_zoomSlider_valueChanged(int value){
 void statsviewer::on_stretchSlider_valueChanged(int value){
 
     this->stretch = (this->datesRead.size() >> value);
-    if(this->stretch > 10){ this->stretch = 10; }
+    if(this->stretch > 40){ this->stretch = 40; }
     if(this->stretch == 0){ this->stretch = 1; }
     generateGraph();
+
 }
