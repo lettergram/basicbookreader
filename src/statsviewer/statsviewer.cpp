@@ -311,6 +311,12 @@ void statsviewer::on_titleBox_activated(const QString &arg1){
 
     this->datesRead.clear();
 
+    if(arg1.compare("Title", Qt::CaseInsensitive) == 0){
+        generateLifeLogGraph();
+        return;
+    }
+
+
     QStringList t = arg1.split(".", QString::SkipEmptyParts);
     this->bookfile = t[0];
 
@@ -349,7 +355,6 @@ void statsviewer::on_timesToggle_clicked(){
 void statsviewer::on_statsTypeBox_activated(const QString &arg1){
 
     this->datesRead.clear();
-    this->stretch = (this->datesRead.size() >> 4);
 
     if(this->bookfile.compare("") == 0 || this->bookfile.compare("Title", Qt::CaseInsensitive) == 0){
 
@@ -371,10 +376,10 @@ void statsviewer::on_statsTypeBox_activated(const QString &arg1){
 
     }
 
-    if(this->stretch > 10){ this->stretch = 10; }
-    if(this->stretch == 0){ this->stretch = 3; }
+    ui->stretchSlider->setValue(4);
     generateGraph();
-    ui->stretchSlider->setValue(this->stretch);
+
+    std::cout << this->stretch << std::endl;
 }
 
 /**
@@ -399,7 +404,9 @@ void statsviewer::on_zoomSlider_valueChanged(int value){
  * @param value - the current location of the slide bar
  */
 void statsviewer::on_stretchSlider_valueChanged(int value){
+
     this->stretch = (this->datesRead.size() >> value);
+    if(this->stretch > 10){ this->stretch = 10; }
     if(this->stretch == 0){ this->stretch = 1; }
     generateGraph();
 }
