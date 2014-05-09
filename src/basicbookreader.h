@@ -25,19 +25,12 @@ private slots:
     void on_saveBookButton_clicked();
 
     void on_lineEdit_page_textEdited(const QString &arg1);
-
     void on_toolButton_clicked();
-
     void on_enable_stats_button_clicked();
-
     void on_pushNoteButton_clicked();
 
-    void on_textBrowser_selectionChanged();
-
     void on_search_type_currentIndexChanged(const QString &arg1);
-
     void on_user_rating_currentIndexChanged(int index);
-
     void keyPressEvent( QKeyEvent *k );
 
     void on_viewStats_clicked();
@@ -56,6 +49,7 @@ private:
 
     void loadpage();
     void loadNewBook();
+    int parseImage(int, QString, QGraphicsScene *);
 
 };
 

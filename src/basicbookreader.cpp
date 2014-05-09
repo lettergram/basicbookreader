@@ -102,7 +102,7 @@ void BasicBookReader::on_prevButton_clicked(){
  * @brief BasicBookReader::on_saveBookButton_clicked - saves the book to the library
  */
 void BasicBookReader::on_saveBookButton_clicked(){
-    if(book == NULL){ return; }
+    if(book == NULL || book->page.size() < 1){ return; }
     for(int i = 0; i < lib->books.size(); i++){
         if(book->title->compare(lib->books[i].title, Qt::CaseInsensitive) == 0){
             lib->books[i].pagenum = book->pagenum;
@@ -186,6 +186,37 @@ void BasicBookReader::on_enable_stats_button_clicked(){
     }
 }
 
+/**
+ * Private function of the BasicBookReader class
+ *
+ * @brief BasicBookReader::parseImage - parses a given <img src=''>
+ *          and adds the image to the scene if it exists
+ * @param y - current y-line postion
+ * @param line - the line text to search for parsable image file
+ * @param scene - scene to add image too
+ * @return - 0 if no image found, the number of height (in pixels) of the image
+ *          if the image exists.
+ */
+int BasicBookReader::parseImage(int y, QString line, QGraphicsScene * scene){
+
+    QPixmap pixel_image;
+
+    // TODO: Currently Only works for following format <img src='location of image on disk'>\n
+    if(line.indexOf("img src=", 0, Qt::CaseInsensitive) != -1){
+        QStringList imageName = line.split("\"");
+        QPixmap pixel_image;
+        std::cout << QString(*this->lib_loc + "images/" + imageName[1]).toStdString() << std::endl;
+        pixel_image.load(*this->lib_loc + "images/" + imageName[1]);
+        if(pixel_image.isNull())
+            return 0;
+        QGraphicsPixmapItem * item = new QGraphicsPixmapItem(pixel_image);
+        item->setY(y);
+        scene->addItem(item);
+        return pixel_image.height();
+    }
+    return 0;
+}
+
 
 /**
  * Private Function of the BasicBookReader class
@@ -207,21 +238,31 @@ void BasicBookReader::loadpage(){
         stream.seek(0);
         this->book->pagenum = 0;
     }
+
+    QGraphicsScene * scene = new QGraphicsScene();
+    int fontsize = 13; // TODO: Make aspect of book or something
+    QFont f;
+    f.setPointSize(fontsize);
+    int curline_pos = 0;
+    int imgline = 0;
+
     for(int i = 0; i < LINESPERPAGE; i++){
-        QString toadd(stream.readLine(85));
-        if(toadd.size() > 84)
-            str.append(toadd + '-' + '\n');
-        else
-            str.append(toadd + '\n');
+        QString toadd(stream.readLine(85)); // TODO: Improve line and page parse
+        imgline = this->parseImage(curline_pos, toadd, scene);
+        if(imgline == 0){
+            if(toadd.size() > 84)
+                scene->addText(toadd + '-', f)->setPos(0, curline_pos);
+            else
+                scene->addText(toadd, f)->setPos(0, curline_pos);
+        }
+        curline_pos += (imgline | fontsize) + 3; // Not exactly inline but close enough
     }
 
-    str.append(QString(QString("Page: ") + QString::number(this->book->pagenum)
-               + " / " + QString::number(this->book->page.count() - 1) + '\n').rightJustified(135, ' '));
-
-    const QString * display = &str;
+    scene->addText(QString(QString("Page: ") + QString::number(this->book->pagenum)+ " / "
+    + QString::number(this->book->page.count() - 1)).rightJustified(135, ' '))->setPos(0, curline_pos);
+    ui->graphicsView->setScene(scene);
 
     this->stats->startPage(this->book->pagenum);
-    ui->textBrowser->setText(*display);
     file.close();
 }
 
@@ -248,42 +289,6 @@ void BasicBookReader::loadNewBook(){
     this->stats= new statistics(*this->book->title, this->book->page.count(), LINESPERPAGE);
     loadpage();
 }
-
-/**
- * Public Function of the BasicBookReader class
- *
- * @brief BasicBookReader::on_textBrowser_selectionChanged - what has been
- *          highlighted for notes
- */
-void BasicBookReader::on_textBrowser_selectionChanged(){
-
-    if(this->book == NULL || this->book->page.size() == 0){ return; }
-
-    QPoint pos = QCursor::pos();
-
-    int y = int(double(pos.y() - 130) / 16.8);
-    int x = int(double(pos.x() - 357));             // TODO save between to save particular words
-
-    QFile file(*book->file_location + *book->title);
-    if(!file.open(QIODevice::ReadOnly))
-        QMessageBox::information(0, "Error", file.errorString());
-    QTextStream stream(&file);
-    stream.seek(this->book->page[this->book->pagenum]);
-
-    if( this->highlight.size() == 0) { this->highlight.resize(LINESPERPAGE); }
-
-    for(int i = 0; i < LINESPERPAGE; i++){
-        QString line(stream.readLine(85) + '\n');
-        if(i == y){
-            this->stats->xcursor[i].push_back(x);
-            if(this->highlight[i] == NULL){ this->highlight[i].append(line); }
-        }
-    }
-
-    stream.seek(this->book->page[this->book->pagenum]);
-    file.close();
-}
-
 
 /**
  * Public funcion of BasicBookReader class
