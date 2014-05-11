@@ -37,6 +37,11 @@ BasicBookReader::BasicBookReader(QWidget *parent) :
         this->stats = NULL;
         this->book->open = false;
 
+        this->fontsize = 13;
+        this->start = 0;
+        this->end = 0;
+
+
         this->book->file_location = new QString(*this->lib_loc);
         this->search = QString("Pages");
         this->grabKeyboard();
@@ -190,7 +195,9 @@ void BasicBookReader::on_enable_stats_button_clicked(){
  * Private function of the BasicBookReader class
  *
  * @brief BasicBookReader::parseImage - parses a given <img src=''>
- *          and adds the image to the scene if it exists
+ *          and adds the image to the scene if it exists. Currently
+ *          Only works for following format <img src='location of
+ *          image in books directory'>
  * @param y - current y-line postion
  * @param line - the line text to search for parsable image file
  * @param scene - scene to add image too
@@ -201,7 +208,8 @@ int BasicBookReader::parseImage(int y, QString line, QGraphicsScene * scene){
 
     QPixmap pixel_image;
 
-    // TODO: Currently Only works for following format <img src='location of image on disk'>\n
+    //TODO: Add basicbookreader private variable to hold y
+
     if(line.indexOf("img src=", 0, Qt::CaseInsensitive) != -1){
         QStringList imageName = line.split("\"");
         QPixmap pixel_image;
@@ -240,9 +248,8 @@ void BasicBookReader::loadpage(){
     }
 
     QGraphicsScene * scene = new QGraphicsScene();
-    int fontsize = 13; // TODO: Make aspect of book or something
     QFont f;
-    f.setPointSize(fontsize);
+    f.setPointSize(this->fontsize);
     int curline_pos = 0;
     int imgline = 0;
 
@@ -255,7 +262,7 @@ void BasicBookReader::loadpage(){
             else
                 scene->addText(toadd, f)->setPos(0, curline_pos);
         }
-        curline_pos += (imgline | fontsize) + 3; // Not exactly inline but close enough
+        curline_pos += (imgline | this->fontsize) + 3; // Not exactly inline but close enough
     }
 
     scene->addText(QString(QString("Page: ") + QString::number(this->book->pagenum)+ " / "
@@ -320,15 +327,13 @@ void BasicBookReader::on_pushNoteButton_clicked(){
     QTextStream stream(&file);
 
     stream << title[0] << ", page " << this->book->pagenum << ": " << endl;
-    stream << "Quote:\n'";
+    stream << "Quote:\n\n";
     for(unsigned long i = 0; i < this->highlight.size(); i++)
-        stream << this->highlight[i];
-    stream << "'" << endl;
-    stream << "Note: " << note << endl;
+        stream << "     " + this->highlight[i] + '\n';
+    stream << "\n\nNote:\n" << note << endl;
     stream << "---------------------------\n" << endl;
 
     this->highlight.clear();
-
     file.close();
 }
 
@@ -357,6 +362,80 @@ void BasicBookReader::on_user_rating_currentIndexChanged(int index){
     if(this->book == NULL){ return; }
     this->stats->usrsrating(index);
 }
+
+/**
+ * Public function of the BasicBookReader Class
+ *
+ * @brief BasicBookReader::on_viewStats_clicked - if
+ *      statistics is clicked open the view statistics window
+ */
+void BasicBookReader::on_viewStats_clicked(){
+
+    sv = new statsviewer();
+    QStringList titles;
+    for(int i = 0; i < this->lib->books.size(); i++)
+        titles.append(*this->lib->books[i].title);
+    sv->initTitle(titles);
+    sv->show();
+}
+
+/**
+ * Private Slot of the BasicBookReader
+ *
+ * @brief BasicBookReader::on_graphicsView_rubberBandChanged - Saves the position
+ *          the start and end point of the highlightes section
+ * @param viewportRect - Current viewport rectangle - NOT USED
+ * @param fromScenePoint - end point of highlighted box
+ * @param toScenePoint - start point of highlighted box
+ */
+void BasicBookReader::on_graphicsView_rubberBandChanged(const QRect &viewportRect, const QPointF &fromScenePoint, const QPointF &toScenePoint){
+
+    if(book == NULL || book->page.size() < 1){ return; }
+
+    if(fromScenePoint.y() != 0 && toScenePoint.y() != 0){
+        this->start = toScenePoint.y();
+        this->end = fromScenePoint.y();
+        return;
+    }
+
+    this->saveHighlightedSection();
+}
+
+/**
+ * Private Function of BasicBookReader
+ *
+ *
+ * WARNING: CURRENTLY INACCURATE ON PAGES WITH IMAGES - CRITICAL FIX COMING SOON
+ *
+ *
+ * @brief BasicBookReader::saveHighlightedSection - Saves the highlighted
+ *      section in the basicbookreaders qscene into this->heighlight[i]
+ */
+void BasicBookReader::saveHighlightedSection(){
+
+    QFile file(*book->file_location + *book->title);
+    if(!file.open(QIODevice::ReadOnly))
+        QMessageBox::information(0, "Error", file.errorString());
+    QTextStream stream(&file);
+    stream.seek(this->book->page[this->book->pagenum]);
+
+    if(this->end < this->start){
+        int temp = this->start;
+        this->start = this->end;
+        this->end = temp;
+    }
+
+    this->start /= (this->fontsize + 3);
+    this->end /= (this->fontsize + 3);
+
+    /* Iterate to start */
+    for(int i = 0; i < this->start; i++){ stream.readLine(85); }
+
+    /* Add to highlighted section */
+    for(int i = this->start; i < this->end; i++)
+        this->highlight.push_back(stream.readLine(85));
+}
+
 
 /**
  * Public function of the BasicBookReader class
@@ -391,21 +470,4 @@ void BasicBookReader::keyPressEvent( QKeyEvent *k ){
        || k->key() == Qt::Key_9){
         this->releaseKeyboard();
     }
-}
-
-
-/**
- * Public function of the BasicBookReader Class
- *
- * @brief BasicBookReader::on_viewStats_clicked - if
- *      statistics is clicked open the view statistics window
- */
-void BasicBookReader::on_viewStats_clicked(){
-
-    sv = new statsviewer();
-    QStringList titles;
-    for(int i = 0; i < this->lib->books.size(); i++)
-        titles.append(*this->lib->books[i].title);
-    sv->initTitle(titles);
-    sv->show();
 }

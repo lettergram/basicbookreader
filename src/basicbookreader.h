@@ -35,10 +35,16 @@ private slots:
 
     void on_viewStats_clicked();
 
+    void on_graphicsView_rubberBandChanged(const QRect &viewportRect, const QPointF &fromScenePoint, const QPointF &toScenePoint);
+
 private:
 
     Ui::BasicBookReader *ui;
     statsviewer * sv;
+
+    int fontsize;
+    int start;
+    int end;
 
     current_book * book;
     library * lib;
@@ -50,6 +56,7 @@ private:
     void loadpage();
     void loadNewBook();
     int parseImage(int, QString, QGraphicsScene *);
+    void saveHighlightedSection();
 
 };
 

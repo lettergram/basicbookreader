@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>780</width>
+    <width>782</width>
     <height>610</height>
    </rect>
   </property>
@@ -159,6 +159,12 @@
         <width>6300</width>
         <height>6300</height>
        </size>
+      </property>
+      <property name="mouseTracking">
+       <bool>true</bool>
+      </property>
+      <property name="dragMode">
+       <enum>QGraphicsView::RubberBandDrag</enum>
       </property>
      </widget>
     </item>
