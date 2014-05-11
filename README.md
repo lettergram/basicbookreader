@@ -1,11 +1,19 @@
 BasicBookReader
 ============
 
+<h1>No longer being updated!</h1>
+Please visit <a href="https://github.com/lettergram/OpenBKZ">OpenBKZ</a> for the uptodate code. I changed
+the name to reflect the opensource nature of the product, and I also felt the name was much more witty.
+
+
+------------------------------------------------------------
+
+
 A book reader written in C++ and Qt 5.2 (Qt 4+ should work)
 
 Required: <a href="http://qt-project.org/downloads">Qt 4.+</a> and C++11 
 
-Project Page/Website: <a href="http://austingwalters.com/basicbookreader/">austingwalters.com</a>
+Project Page/Website: <a href="http://austingwalters.com/openbkz/">austingwalters.com</a>
 
 Excellent Book Source: <a href="http://www.gutenberg.org/">Project Gutenberg</a> <i>(gutenberg.org)</i>
 
@@ -15,7 +23,7 @@ Platform: Cross-Platform
 
 I built basicbookreader as a template for other book readers, the goal specifically in mind
 is adding a large number of analytics other book readers did not offer (or at least did not let me control).
-This reader only took ~100 hours to complete at this point and I am sure you can tell, please feel free to offer suggestions or make pull requests, etc. The reason I am making this open source is the hope that someone can use it, if 
+This reader only took ~200 hours to complete at this point and I am sure you can tell, please feel free to offer suggestions or make pull requests, etc. The reason I am making this open source is the hope that someone can use it, if 
 they ever stumble upon my github that is.
 
 If anyone does end up using it, I would hope you contribute to the project, or at least let me know what you use it for! It's nice to know when a project is being put to use.
