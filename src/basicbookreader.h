@@ -45,6 +45,8 @@ private:
     int fontsize;
     int start;
     int end;
+    int start_search;
+    int end_search;
 
     current_book * book;
     library * lib;
@@ -56,8 +58,9 @@ private:
     void loadpage();
     void loadNewBook();
     int parseImage(int, QString, QGraphicsScene *);
-    void saveHighlightedSection();
 
+    void saveHighlightedSection();
+    void searchWord();
 };
 
 #endif // BASICBOOKREADER_H

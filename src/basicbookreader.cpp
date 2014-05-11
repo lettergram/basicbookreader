@@ -7,6 +7,7 @@
 #include <QInputDialog>
 #include <QCursor>
 #include <QPoint>
+#include <QDesktopServices>
 
 /**
  *  Constructor of the BasicBookReader class
@@ -213,7 +214,7 @@ int BasicBookReader::parseImage(int y, QString line, QGraphicsScene * scene){
     if(line.indexOf("img src=", 0, Qt::CaseInsensitive) != -1){
         QStringList imageName = line.split("\"");
         QPixmap pixel_image;
-        std::cout << QString(*this->lib_loc + "images/" + imageName[1]).toStdString() << std::endl;
+
         pixel_image.load(*this->lib_loc + "images/" + imageName[1]);
         if(pixel_image.isNull())
             return 0;
@@ -393,12 +394,60 @@ void BasicBookReader::on_graphicsView_rubberBandChanged(const QRect &viewportRec
     if(book == NULL || book->page.size() < 1){ return; }
 
     if(fromScenePoint.y() != 0 && toScenePoint.y() != 0){
+
         this->start = toScenePoint.y();
         this->end = fromScenePoint.y();
+
+        if(this->start/(this->fontsize + 3) == this->end/(this->fontsize + 3)){
+            this->start_search = fromScenePoint.x();
+            this->end_search = toScenePoint.x();
+        }
         return;
     }
 
-    this->saveHighlightedSection();
+    if(this->start/(this->fontsize + 3) == this->end/(this->fontsize + 3))
+        this->searchWord();
+    else
+        this->saveHighlightedSection();
+}
+
+/**
+ * Private Function of BasicBookReader
+ *
+ * @brief BasicBookReader::searchWord - opens a google webpage with yoursearch
+ *      it's awful, but it works (kinda)...
+ *
+ *  You just highlight the word(s) in the line
+ *
+ * FOR THE FUTURE: I will make it so if you click shift,
+ *      all of the words will highlight so you can pick a specific word
+ */
+void BasicBookReader::searchWord(){
+
+    QFile file(*book->file_location + *book->title);
+    if(!file.open(QIODevice::ReadOnly))
+        QMessageBox::information(0, "Error", file.errorString());
+    QTextStream stream(&file);
+    stream.seek(this->book->page[this->book->pagenum]);
+
+    if(this->end_search < this->start_search){
+        int temp = this->start_search;
+        this->start_search = this->end_search;
+        this->end_search = temp;
+    }
+
+    this->start_search /= (7 * this->fontsize / 15);
+    this->end_search /= (7 * this->fontsize / 15);
+
+    for(int i = 0; i < LINESPERPAGE; i++){
+        QString line = stream.readLine(85);
+        if(this->start / (this->fontsize + 3) == i){
+            int space = (line.count(' ', Qt::CaseInsensitive));
+            line.remove(this->end_search, 85);
+            line.remove(0, this->start_search - space);
+            QDesktopServices::openUrl(QUrl("https://www.google.com/#q=define+" + line));
+        }
+    }
 }
 
 /**
@@ -435,7 +484,6 @@ void BasicBookReader::saveHighlightedSection(){
     for(int i = this->start; i < this->end; i++)
         this->highlight.push_back(stream.readLine(85));
 }
-
 
 /**
  * Public function of the BasicBookReader class
