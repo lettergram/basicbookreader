@@ -83,8 +83,6 @@ void statistics::endPage(int pagenum){
 
     if(disable_flag){ return; }
 
-    reviewed(pagenum);
-
     double diff = difftime(time(NULL), this->start);
     if(diff < 2 ){ return; }
 
@@ -227,15 +225,12 @@ void statistics::closeJournal(){
  * Public Function of the statistics class
  *
  * @brief statistics::reviewed - If a user highlights a secion
- *      the page, line#, and every 8th x position will be saved.
- *      This is called every time the user clicks "next."
+ *      to look something up.
  *
- *      This is not ideal, however it will provide insight to a given
- *      word that is "searched" for example
- *
+ * @param word - term the user looked up
  * @param pagenum - the page number that the user is currently on
  */
-void statistics::reviewed(int pagenum){
+void statistics::reviewed(QString term, int pagenum){
 
     if(disable_flag){ return; }
 
@@ -247,13 +242,7 @@ void statistics::reviewed(int pagenum){
         QMessageBox::information(0, "Error", "Writing in journal");
 
     QTextStream stream(&file);
-
-    for(unsigned long j = 0; j < this->xcursor.size(); j++){
-        if(this->xcursor[j].size() > 0){ stream << "\n" << pagenum << ", " << j << ", "; }
-        for(unsigned long i = 0; i < this->xcursor[j].size(); i += 8)
-            stream << this->xcursor[j][i] << ", ";
-        this->xcursor[j].clear();
-    }
+    stream << "\n" << pagenum << ": " << term << endl;
 }
 
 /**

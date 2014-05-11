@@ -24,7 +24,7 @@ public:
     void endPage(int pagenum);
     void disableStats();
     void enableStats();
-    void reviewed(int pagenum);
+    void reviewed(QString term, int pagenum);
     void usrsrating(int val);
 
     std::vector< std::vector< int > > xcursor;

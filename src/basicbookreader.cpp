@@ -438,16 +438,19 @@ void BasicBookReader::searchWord(){
 
     this->start_search /= (7 * this->fontsize / 15);
     this->end_search /= (7 * this->fontsize / 15);
+    QString line;
 
     for(int i = 0; i < LINESPERPAGE; i++){
-        QString line = stream.readLine(85);
+        line = stream.readLine(85);
         if(this->start / (this->fontsize + 3) == i){
             int space = (line.count(' ', Qt::CaseInsensitive));
             line.remove(this->end_search, 85);
             line.remove(0, this->start_search - space);
             QDesktopServices::openUrl(QUrl("https://www.google.com/#q=define+" + line));
+            break;
         }
     }
+    this->stats->reviewed(line, this->book->pagenum);
 }
 
 /**
